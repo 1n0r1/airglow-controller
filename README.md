@@ -6,7 +6,7 @@ Ubuntu 22.04
 
 Download Andor SDK2.104.30064.0
 
-Extract then ```sudo ./install_andor```
+Extract then `sudo ./install_andor`
 
 
 Andor SDK also require libusb:
