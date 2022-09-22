@@ -22,4 +22,4 @@ After successful installation of Andor SDK, `libandor.so` should appear in `/usr
 
 cd into `components/andorsdk_wrapper/` and `python setup.py build_ext -i` to build the python module
 
-Now you can include `components/andorsdk_wrapper/andorsdk`
+Now you can import to python `components/andorsdk_wrapper/andorsdk`
