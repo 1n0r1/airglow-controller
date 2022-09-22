@@ -17,3 +17,9 @@ Andor SDK also require libusb:
 Test sdk by `make` an example and try running it
 
 After successful installation of Andor SDK, `libandor.so` should appear in `/usr/local/lib/`. This is the shared library that we can use to call the SDK functions in Python with ctypes.
+
+## Cython for SDK
+
+cd into `components/andorsdk_wrapper/` and `python setup.py build_ext -i` to build the python module
+
+Now you can include `components/andorsdk_wrapper/andorsdk`
