@@ -1,12 +1,21 @@
 
 cdef extern from "./include/atmcdLXd.h":
     unsigned int Initialize(char * dir)
-    unsigned int CoolerOFF()
-    unsigned int CoolerON()
-    unsigned int SetTemperature(int temperature)
-    unsigned int GetTemperature(int * temperature)
     unsigned int ShutDown()
 
+    unsigned int CoolerON()
+    unsigned int CoolerOFF()
+    unsigned int SetTemperature(int temperature)
+    unsigned int GetTemperature(int * temperature)
+    unsigned int GetTemperatureRange(int * mintemp, int * maxtemp)
+
+    unsigned int SetAcquisitionMode(int mode)
+    unsigned int SetReadMode(int mode)
+    unsigned int SetExposureTime(float time)
+    unsigned int StartAcquisition()
+    unsigned int GetStatus(int * status)
+    unsigned int GetAcquiredData(long * arr, long size)
+    
 
     cdef int DRV_ERROR_CODES
     cdef int DRV_SUCCESS
