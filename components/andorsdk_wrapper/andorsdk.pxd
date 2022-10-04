@@ -9,13 +9,18 @@ cdef extern from "./include/atmcdLXd.h":
     unsigned int GetTemperature(int * temperature)
     unsigned int GetTemperatureRange(int * mintemp, int * maxtemp)
 
+
+    unsigned int SetShutter(int typ, int mode, int closingtime, int openingtime)
     unsigned int SetAcquisitionMode(int mode)
     unsigned int SetReadMode(int mode)
     unsigned int SetExposureTime(float time)
+    unsigned int SetImage(int hbin, int vbin, int hstart, int hend, int vstart, int vend)
+
     unsigned int StartAcquisition()
     unsigned int GetStatus(int * status)
-    unsigned int GetAcquiredData(long * arr, long size)
     
+    unsigned int GetAcquiredData(long * arr, long size)
+    unsigned int GetOldestImage(long * arr, long size)
 
     cdef int DRV_ERROR_CODES
     cdef int DRV_SUCCESS
