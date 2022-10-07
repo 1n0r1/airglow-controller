@@ -5,6 +5,7 @@ from cython.operator import dereference
 from libc.stdlib cimport malloc, free
 
 
+
 cdef class Andorsdk:
     
     def __cinit__(self):
@@ -65,7 +66,7 @@ cdef class Andorsdk:
         print(code2msg(sta))
 
         # Exposure time
-        sta = andorsdk.SetExposureTime(10)
+        sta = andorsdk.SetExposureTime(1)
         print(code2msg(sta))
 
         # Trigger
@@ -73,7 +74,7 @@ cdef class Andorsdk:
         print(code2msg(sta))
 
         # Full resolution
-        sta = andorsdk.SetImage(1,1,1,1024,1,256)
+        sta = andorsdk.SetImage(1,1,1,1024,1,1024)
         print(code2msg(sta))
         return
 
@@ -100,14 +101,14 @@ cdef class Andorsdk:
             a 2d list of longs
         """
 
-        cdef unsigned long size = 1024*256
+        cdef unsigned long size = 1024*1024
         cdef long * t = <long*> malloc(sizeof(long)*size)
         
         sta = andorsdk.GetOldestImage(t, size)
         print(code2msg(sta))
 
         re = []
-        for i in range(0, 256):
+        for i in range(0, 1024):
             row = []
             for j in range(0, 1024):
                 row.append(t[i*1024 + j])
