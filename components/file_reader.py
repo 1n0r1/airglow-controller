@@ -1,2 +1,0 @@
-def ControlFileRead(filenames):
-    return
