@@ -24,6 +24,6 @@ cd into `components/andorsdk_wrapper/` and `python3 setup.py build_ext -i` to bu
 
 Now you can import to python `components/andorsdk_wrapper/andorsdk`
 
-## pyephem library for astronomoy
+## PyEphem library for astronomoy
 
 `pip install pyephem`
