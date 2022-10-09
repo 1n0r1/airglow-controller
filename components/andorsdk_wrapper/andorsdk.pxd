@@ -1,5 +1,9 @@
 
 cdef extern from "./include/atmcdLXd.h":
+    
+    ctypedef long at_32
+    ctypedef long at_u32
+
     unsigned int Initialize(char * dir)
     unsigned int ShutDown()
 
@@ -19,8 +23,8 @@ cdef extern from "./include/atmcdLXd.h":
     unsigned int StartAcquisition()
     unsigned int GetStatus(int * status)
     
-    unsigned int GetAcquiredData(long * arr, long size)
-    unsigned int GetOldestImage(long * arr, long size)
+    unsigned int GetAcquiredData(at_32 * arr, at_u32 size)
+    unsigned int GetMostRecentImage(at_32 * arr, at_u32 size)
 
     cdef int DRV_ERROR_CODES
     cdef int DRV_SUCCESS

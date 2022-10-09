@@ -1,8 +1,3 @@
-from andorsdk_wrapper import andorsdk
-from andorsdk_wrapper import errorcodestable
-
+import components.andorsdk_wrapper.andorsdk as andorsdk
 camera = andorsdk.Andorsdk()
-temperature = camera.getTemperature()
-print(temperature)
-camera.setTemperature(-20)
 

@@ -3,7 +3,7 @@ from Cython.Build import cythonize
 
 setup(
     ext_modules = cythonize([
-        "errorcodestable.pyx",
+        Extension("errorcodestable", ["errorcodestable.pyx"]),
         Extension("andorsdk", ["andorsdk.pyx"],
                     libraries=["andor"])
         

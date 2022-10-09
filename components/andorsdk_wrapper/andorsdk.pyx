@@ -101,10 +101,10 @@ cdef class Andorsdk:
             a 2d list of longs
         """
 
-        cdef unsigned long size = 1024*1024
-        cdef long * t = <long*> malloc(sizeof(long)*size)
+        cdef at_u32 size = 1024*1024
+        cdef at_32 * t = <at_32*> malloc(sizeof(at_32)*size)
         
-        sta = andorsdk.GetOldestImage(t, size)
+        sta = andorsdk.GetMostRecentImage(t, size)
         print(code2msg(sta))
 
         re = []
