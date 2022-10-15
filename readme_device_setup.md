@@ -1,5 +1,5 @@
 #Setup ODYSSEY
-Ubuntu 22.05
+Ubuntu 22.04
 Python3.10.6
 
 #Enable ssh:
