@@ -1,3 +1,4 @@
 adafruit-circuitpython-motorkit
 pyephem
 cython
+numpy
