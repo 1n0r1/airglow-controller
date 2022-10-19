@@ -5,16 +5,16 @@ from PIL import Image
 
 camera = andorsdk.Andorsdk()
 
-camera.setParameters()
+camera.setExposureTime(1)
+camera.setShutter()
+camera.setReadMode()
+camera.setAcquisitionMode()
+camera.setImage()
 camera.startAcquisition()
+
 while (camera.getStatus() != "DRV_IDLE"):
     sleep(1)
     
 img = camera.getImage()
-npimg = np.array(img)
-npimg = npimg/np.max(npimg)*255
-png = Image.fromarray(npimg)
-png = png.convert('RGB')
-png.save('test.png')
-
+print(img)
 camera.shutDown()
