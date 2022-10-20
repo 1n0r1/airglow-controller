@@ -4,6 +4,12 @@ from datetime import datetime, timedelta, timezone
 import utilities.time_helper
 from config import config
 from schedule import observations
+import sys 
+import os
+from components.camera import getCamera
+# from filterwheel import FilterWheel
+
+
 
 timeHelper = utilities.time_helper.TimeHelper()
 sunrise = timeHelper.getSunrise()
@@ -17,6 +23,8 @@ timeHelper.waitUntilHousekeeping()
 
 # TODO
 # initialise skyscanned, camera, filterwheel
+
+camera = getCamera("Andor")
 
 timeHelper.waitUntilStartTime()
 

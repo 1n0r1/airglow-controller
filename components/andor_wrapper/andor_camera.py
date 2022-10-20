@@ -1,4 +1,11 @@
-import andorsdk
+
+import sys
+import os
+sys.path.append
+
+# This import only works if andor_camera.py is imported from outside components (see main_scheduler.py for import)
+# Will not work if import inside components
+from .andorsdk_wrapper import andorsdk
 
 class AndorCamera:
 

@@ -5,3 +5,4 @@ andorsdk.cpython*
 errorcodestable.c
 errorcodestable.cpython*
 *.png
+__pycache__

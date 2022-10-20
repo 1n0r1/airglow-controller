@@ -171,3 +171,4 @@ cdef extern from "./include/atmcdLXd.h":
     cdef int DRV_OA_CAMERA_NOT_AVAILABLE
 
     cdef int DRV_PROCESSING_FAILED
+
