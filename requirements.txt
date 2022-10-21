@@ -2,3 +2,5 @@ adafruit-circuitpython-motorkit
 pyephem
 cython
 numpy
+pythonnet
+zugbruecke
