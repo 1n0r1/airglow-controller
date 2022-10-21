@@ -9,4 +9,8 @@ import pythonnet
 ctypes64 = CtypesSession(arch='win64')
 PiUsb = ctypes64.windll.LoadLibrary('PiUsbNet.dll')
 
-connectShutter = PiUsb.piConnectShutter
+class LaserShutter:
+    def __init__(self, serial):
+        PiUsb.piConnectShutter()
+    
+    
