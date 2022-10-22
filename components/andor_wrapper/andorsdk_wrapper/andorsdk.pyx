@@ -217,8 +217,8 @@ def getStatus():
 
 
 def getImage(hbin=2, vbin=2, hstart=1, hend=1024, vstart=1, vend=1024):
-    height = (vend - vstart + 1)/vbin
-    width = (hend - hstart + 1)/hbin
+    height = int((vend - vstart + 1)/vbin)
+    width = int((hend - hstart + 1)/hbin)
 
     cdef at_u32 size = height*width
     cdef at_32 * t = <at_32*> malloc(sizeof(at_32)*size)

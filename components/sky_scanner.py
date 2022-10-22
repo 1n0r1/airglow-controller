@@ -40,7 +40,7 @@ class SkyScanner():
         return zeni_machine_step
 
     def set_pos(self, azi, zeni):
-        self.ser.write('a=%d ' % azi.encode())
+        self.ser.write('a={azi} '.encode())
         self.ser.write('z=%d ' %zeni.encode())
         self.ser.write('GOSUB4 '.encode())
 
