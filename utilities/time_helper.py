@@ -34,3 +34,5 @@ class TimeHelper:
         while (datetime.now() < self.getSunset()):
             sleep(5)
         return
+    
+    
