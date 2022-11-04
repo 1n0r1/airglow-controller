@@ -10,7 +10,7 @@ def take_initial_image(camera, exposure):
     return nparr
 
 def take_normal_image(camera, exposure):
-    # closes shutter
+    # keeps shutter open by default
     camera.setShutter()
     camera.setExposureTime(exposure)
     camera.startAcquisition()
