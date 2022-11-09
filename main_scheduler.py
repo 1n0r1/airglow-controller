@@ -10,6 +10,13 @@ from components.camera import getCamera
 fromt components.sky_scanner import SkyScanner
 from utilities.image_taker import take_initial_image, take_normal_image
 import h5py
+import logging
+
+
+# logger file 
+
+logging.basicConfig(filename='example.log',
+                    encoding='utf-8', level=logging.DEBUG)
 
 # from filterwheel import FilterWheel
 
@@ -19,10 +26,13 @@ data_files = h5py.File(date_file_name + '.hdf5', 'w')
 timeHelper = utilities.time_helper.TimeHelper()
 sunrise = timeHelper.getSunrise()
 sunset = timeHelper.getSunset()
+logging.info('Got sunruse and sunset times')
 
 # TODO: close laser_shutter
 
 timeHelper.waitUntilHousekeeping()
+logging.info('Housekeeping time start')
+
 # housekeeping operations
 
 
@@ -42,15 +52,21 @@ camera.setReadMode()
 # sets temperature
 camera.setTemperature(temp_setpoint)
 camera.turnOnCooler()
+logging.info('Set camera temperature')
+
 
 # Wait until sunset
 timeHelper.waitUntilStartTime()
+logging.info('Sunset time start')
+
 
 # take dark, bias, laser image
 bias_image = take_initial_image(camera, bias_expose) 
 dark_image = take_initial_image(camera, dark_expose)
 data_files.create_dataset("bias_image", data = bias_image)
 data_files.create_dataset("dark_image", data = dark_image)
+logging.info('dark, bias and laser image taken')
+
 
 
 # Start main loop
@@ -65,6 +81,7 @@ while (datetime.now() <= sunrise):
         new_image = take_normal_image(camera, observation["exposureTime"])
         data_files.create_dataset("image"+ str(image_count), data = new_image)
         image_count = image_count + 1
+        logging.info('image' + str(image_count) + 'taken')
         pass
 
 data_files.close()
