@@ -12,6 +12,9 @@ config = {
     "temp_setpoint" : -70,
     "bias_expose" : 60, # ask prof
     "dark_expose" : 0.015, # ask prof 
+    "laser_expose" : 0.015, # ask prof
+    "azi_laser" : 0, # ask prof
+    "zen_laser" : 0 # ask prof
 
 
 

@@ -7,8 +7,10 @@ from schedule import observations
 import sys 
 import os
 from components.camera import getCamera
+from components.lasershutter_i2c.shutter import LaserShutter
 fromt components.sky_scanner import SkyScanner
 from utilities.image_taker import take_initial_image, take_normal_image
+
 import h5py
 import logging
 
@@ -16,7 +18,8 @@ import logging
 # logger file 
 
 logging.basicConfig(filename='example.log',
-                    encoding='utf-8', level=logging.DEBUG)
+                    encoding='utf-8', format='%(asctime)s %(message)s',  level=logging.DEBUG)
+ 
 
 # from filterwheel import FilterWheel
 
@@ -26,7 +29,7 @@ data_files = h5py.File(date_file_name + '.hdf5', 'w')
 timeHelper = utilities.time_helper.TimeHelper()
 sunrise = timeHelper.getSunrise()
 sunset = timeHelper.getSunset()
-logging.info('Got sunruse and sunset times')
+logging.info('Got sunrise and sunset times')
 
 # TODO: close laser_shutter
 
@@ -40,6 +43,7 @@ logging.info('Housekeeping time start')
 
 
 # Housekeeping
+lasershutter = LaserShutter()
 skyscanner = SkyScanner()
 camera = getCamera("Andor")
 skyscanner.go_home()
@@ -61,8 +65,9 @@ logging.info('Sunset time start')
 
 
 # take dark, bias, laser image
-bias_image = take_initial_image(camera, bias_expose) 
-dark_image = take_initial_image(camera, dark_expose)
+bias_image = take_initial_image(camera, config[bias_expose]) 
+dark_image = take_initial_image(camera, config[dark_expose])
+laser_image = take_laser_image(camera, laser_expose, skyscanner, lasershutter, config[azi_laser] , config[zen_laser])
 data_files.create_dataset("bias_image", data = bias_image)
 data_files.create_dataset("dark_image", data = dark_image)
 logging.info('dark, bias and laser image taken')
