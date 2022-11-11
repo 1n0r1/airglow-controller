@@ -80,6 +80,14 @@ class SkyScanner():
         self.ser.write('a=%d ' %azi.encode())
         self.ser.write('z=%d ' %zeni.encode())
         self.ser.write('GOSUB4 '.encode())
+    
+
+    def set_pos_real(self, azi_world, zeni_world):
+        azi, zeni = self.convert_to_machine_steps(azi_world, zeni_world)
+        self.ser.write('a=%d ' %azi.encode())
+        self.ser.write('z=%d ' %zeni.encode())
+        self.ser.write('GOSUB4 '.encode())
+
 
     def check_coords_inbounds(self, azi, zeni):
         # check if he wants helper method to check if they are inbounds
@@ -112,10 +120,10 @@ class SkyScanner():
 
 
 
-    def convert_to_machine_steps(self):
+    def convert_to_machine_steps(self, azi_world, zeni_world):
         # ask about negative components 
-        azi = -self.azi_world - self.azi_offset
-        zeni = (-self.zeni_world) - self.zeni_offset + 180
+        azi = -azi_world - self.azi_offset
+        zeni = (-zeni_world) - self.zeni_offset + 180
         azi_machine_step = round((self.max_steps / 360) * azi)
         zeni_machine_step = round((self.max_steps / 360) * zeni)
         azi_machine_step = self.max_steps - (azi_machine_step % self.max_steps)
