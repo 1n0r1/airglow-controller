@@ -14,7 +14,14 @@ import sys
 import serial
 #import config.py
 import keyboard
+from time import sleep
 
+
+
+
+# add stuff the homing
+# fix the jog file
+# make sure the coordinants are working correctly
 
 
 # class SkyScanner highlighting the different 
@@ -68,25 +75,40 @@ class SkyScanner():
         strr = 'a=%d '% azi_machine_step
         self.ser.write(strr.encode())
         self.ser.write('GOSUB4 '.encode())
+        process_az = self.ser.readline().decode() 
+
         # return azi
 
     def set_pos_zeni(self, zeni_machine_step):
         strr = 'z=%d ' %zeni_machine_step
         self.ser.write(strr.encode())
         self.ser.write('GOSUB4 '.encode())
+        process_az = self.ser.readline().decode() 
+
         return zeni_machine_step
 
     def set_pos(self, azi, zeni):
-        self.ser.write('a=%d ' %azi.encode())
-        self.ser.write('z=%d ' %zeni.encode())
+        self.ser.write(('a=%d ' %azi).encode())
+        self.ser.write(('z=%d ' %zeni).encode())
         self.ser.write('GOSUB4 '.encode())
+        process_az = self.ser.readline().decode() 
+
     
 
     def set_pos_real(self, azi_world, zeni_world):
         azi, zeni = self.convert_to_machine_steps(azi_world, zeni_world)
-        self.ser.write('a=%d ' %azi.encode())
-        self.ser.write('z=%d ' %zeni.encode())
-        self.ser.write('GOSUB4 '.encode())
+        self.ser.write(('a=%d ' %azi).encode())
+        self.ser.write(('z=%d ' %zeni).encode())
+        self.ser.write(('GOSUB4 ').encode())
+        process_az = self.ser.readline().decode() 
+        azi1,zeni1 = self.get_curr_coords()
+        while (azi != zeni1 and zeni != azi1):
+            print(azi, azi1, zeni, zeni1)
+            azi1, zeni1 = self.get_curr_coords()
+            sleep(2)
+            print("Waiting")
+        print("finshed mooving")
+
 
 
     def check_coords_inbounds(self, azi, zeni):
@@ -146,7 +168,8 @@ class SkyScanner():
         self.set_pos(machine_sun_azi, machine_sun_zeni)
         while (True):
             curr_az, curr_zen = self.get_curr_coords()
-            if (curr_az == machine_sun_azi and machine_sun_zeni == curr_zen):
+            print(curr_az, curr_zen, machine_sun_azi, machine_sun_zeni)
+            if (curr_az == machine_sun_zeni and machine_sun_azi== curr_zen):
                 break
         curr_az, curr_zen = self.get_curr_coords()
         print("print finished moving to the sun's location - azi coord: {curr_az} zeni coord: {curr_zen}. Use the arrow keys to move the position of the Sky Scanner")
@@ -183,6 +206,8 @@ class SkyScanner():
 
     def go_home(self):
         self.ser.write('GOSUB5 '.encode())
+        sleep(15)
+        print("finshed mooving")
 
 
     def get_curr_coords(self):
@@ -191,8 +216,9 @@ class SkyScanner():
        process_az = self.ser.readline().decode()
        split_by_command_numbers = process_az.split(' ')
        split_by_hash = split_by_command_numbers[1].split('\r')
-       az = (split_by_hash[0])
-       ze = (split_by_hash[1])
+       print(split_by_hash)
+       az = int(split_by_hash[0])
+       ze = int(split_by_hash[1])
        return az, ze
 
    

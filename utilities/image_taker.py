@@ -18,7 +18,7 @@ class Image_Helper:
 
     def save_image(self, type, imgData, exp, az, ze):
         data_files = h5py.File(self.folderName + '/' +
-                               type + '/' + self.counter[type] + '.hdf5', 'w')
+                               type + '_' + datetime.utcnow().strftime('%Y%m%d%H%M%D_') + str(self.counter[type]) + '.hdf5', 'w')
         # Log
         f = data_files.create_dataset("image", data=imgData)
         f.attrs['ExposureTime'] = exp
@@ -40,7 +40,7 @@ class Image_Helper:
         while (self.camera.getStatus() == "DRV_ACQUIRING"):
             sleep(2)
         nparr = self.camera.getImage()
-        self.save_image("dark", nparr)
+        self.save_image("dark", nparr, exposure, az, ze)
 
         return nparr
 
@@ -52,13 +52,13 @@ class Image_Helper:
         while (self.camera.getStatus() == "DRV_ACQUIRING"):
             sleep(2)
         nparr = self.camera.getImage()
-        self.save_image("image", nparr)
+        self.save_image("image", nparr, exposure, az, ze)
         return nparr
 
     # function for laser image
 
     def take_laser_image(self, exposure, skyscanner, lasershutter, az, zen):
-        skyscanner.set_pos(az, zen)
+        skyscanner.set_pos_real(az, zen)
         # move filterwheel
         lasershutter.open_shutter()
         self.camera.setShutter()
@@ -68,5 +68,5 @@ class Image_Helper:
             sleep(2)
         nparr = self.camera.getImage()
         lasershutter.close_shutter()
-        self.save_image("laser", nparr)
+        self.save_image("laser", nparr, exposure, az, zen)
         return nparr
