@@ -1,11 +1,13 @@
 
+from .andorsdk_wrapper import andorsdk
+import logging
 import sys
 import os
 sys.path.append
 
 # This import only works if andor_camera.py is imported from outside components (see main_scheduler.py for import)
 # Will not work if import inside components
-from .andorsdk_wrapper import andorsdk
+
 
 class AndorCamera:
 
@@ -25,29 +27,29 @@ class AndorCamera:
     def setTemperature(self, t):
         re = andorsdk.setTemperature(t)
         print(re)
-        
+
     def turnOffCooler(self):
         re = andorsdk.turnOffCooler()
         print(re)
-        
+
     def turnOnCooler(self):
         re = andorsdk.turnOnCooler()
         print(re)
-        
+
     def shutDown(self):
         re = andorsdk.shutDown()
         print(re)
 
     def setReadMode(self, mode=4):
         """Set the read mode
-        
+
         Parameter
         -------
         mode: 4 for image mode
         """
         re = andorsdk.setReadMode(mode)
+        logging.info('Camera set to read mode')
         print(re)
-
 
     def setExposureTime(self, time):
         re = andorsdk.setExposureTime(time)
@@ -68,14 +70,13 @@ class AndorCamera:
         self.hend = hend
         self.vstart = vstart
         self.vend = vend
-        re = andorsdk.setImage(hbin, vbin, hstart, hend, vstart,vend)
+        re = andorsdk.setImage(hbin, vbin, hstart, hend, vstart, vend)
+        logging.info('Camera image set')
         print(re)
-
 
     def startAcquisition(self):
         re = andorsdk.startAcquisition()
         print(re)
-
 
     def getStatus(self):
         """Get the current status
@@ -84,17 +85,17 @@ class AndorCamera:
         print(re[0])
         return re[1]
 
-
     def getImage(self):
         """Get the most recent image
-        
+
         Returns
         -------
         img
             a np 2d array
         """
-        
-        re = andorsdk.getImage(self.hbin, self.vbin, self.hstart, self.hend, self.vstart, self.vend)
+
+        re = andorsdk.getImage(self.hbin, self.vbin,
+                               self.hstart, self.hend, self.vstart, self.vend)
         print(re[0])
 
         return re[1]

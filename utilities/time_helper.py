@@ -14,6 +14,7 @@ class TimeHelper:
         self.site_location.lon = config["longitude"]
         self.site_location.date = datetime.now()
         self.site_location.elevation = config["elevation"]
+        self.site_location.horizon = config["horizon"]
         self.sun = ephem.Sun()
 
     def getSunrise(self):

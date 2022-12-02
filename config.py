@@ -6,6 +6,8 @@ config = {
     "latitude": "40.1106",
     "longitude": "-88.2073",
     "elevation": 222,
+    "horizon": "-8.0",
+    "instr_name": "minime05",
     "startHousekeeping": 20,
     "sky_offset_el": 0,
     "sky_offset_az": 0,

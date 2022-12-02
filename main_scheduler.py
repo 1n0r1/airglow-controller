@@ -16,13 +16,11 @@ from pathlib import Path
 import signal
 
 
-
-
-
 # logger file
 
 d = datetime.utcnow()
-log_name = config['log_dir'] + config['site'] + d.strftime('_%Y%m%d_%H%M%S.log')
+log_name = config['log_dir'] + config['site'] + \
+    d.strftime('_%Y%m%d_%H%M%S.log')
 logging.basicConfig(filename=log_name,
                     encoding='utf-8', format='%(asctime)s %(message)s',  level=logging.DEBUG)
 
@@ -32,22 +30,24 @@ logging.basicConfig(filename=log_name,
 
 timeHelper = utilities.time_helper.TimeHelper()
 sunrise = timeHelper.getSunrise()
+logging.info('Sunrise time set to ' + str(sunrise))
 sunset = timeHelper.getSunset()
 logging.info('Sunset time set to ' + str(sunset))
-logging.info('Sunrise time set to ' + str(sunrise))
 
 # find location of sun and moon
-### JJM NOTE: THIS WON'T WORK. NEED TO SET THE OBSERVER LOCATION. THIS SEEMS TO BE DONE IN THE TIMEHELPER
-### PROBABLY WANT TO USE THAT OBSERVER SO WE ONLY HAVE ONE WE ARE KEEPING TRACK OF.
+# JJM NOTE: THIS WON'T WORK. NEED TO SET THE OBSERVER LOCATION. THIS SEEMS TO BE DONE IN THE TIMEHELPER
+# PROBABLY WANT TO USE THAT OBSERVER SO WE ONLY HAVE ONE WE ARE KEEPING TRACK OF.
 d = datetime.utcnow()
 sun, moon = ephem.Sun(), ephem.Moon()
 sun_location = sun.compute(d)
+logging.info('Location of the sun is ' + sun_location)
 moon_location = moon.compute(d)
-print('Sun and moon location:',sun_location, moon_location)
+logging.info('Location of the moon is ' + moon_location)
 
 # TODO: close laser_shutter
 
 housekeeping = timeHelper.getHousekeeping()
+logging.info('Housekeeping time is ' + moon_location)
 logging.info('Waiting until Housekeeping time: ' + str(housekeeping))
 timeHelper.waitUntilHousekeeping()
 
@@ -58,18 +58,18 @@ timeHelper.waitUntilHousekeeping()
 
 
 # Housekeeping
-### JJM NOTE, THESE LOG ENTRIES WOULD PROBABLY BETTER LIVE INSIDE THE FUNCTIONS.
+# JJM NOTE, THESE LOG ENTRIES WOULD PROBABLY BETTER LIVE INSIDE THE FUNCTIONS.
 logging.info('Initializing LaserShutter')
-print('Initializing LaserShutter')
 lasershutter = LaserShutter()
-logging.info('Initializing SkyScanner')
+# logging.info('Initializing SkyScanner')
 print('Init SkyScanner')
-### JJM NOTE, SOME OF THESE PARAMETERS (MAYBE ALL) SHOULD BE IN THE CONFIG FILE. MAYBE
-### CREATE ANOTHER DICTIONARY TO STORES THESE? "skyscan_config"?
-skyscanner = SkyScanner(21600, 20, 20, 30, 30, 19.31, .45, 45, 45, 50, '/dev/ttyUSB0')
-logging.info('Initializing CCD')
+# JJM NOTE, SOME OF THESE PARAMETERS (MAYBE ALL) SHOULD BE IN THE CONFIG FILE. MAYBE
+# CREATE ANOTHER DICTIONARY TO STORES THESE? "skyscan_config"?
+skyscanner = SkyScanner(21600, 20, 20, 30, 30,
+                        19.31, .45, 45, 45, 50, '/dev/ttyUSB0')
 print('Init CCD')
 camera = getCamera("Andor")
+
 
 def signal_handler(sig, frame):
     skyscanner.go_home()
@@ -79,11 +79,12 @@ def signal_handler(sig, frame):
     logging.info('Exiting')
     sys.exit(0)
 
+
 signal.signal(signal.SIGINT, signal_handler)
-logging.info('Homing Skyscanner')
+# logging.info('Homing Skyscanner')
 skyscanner.go_home()
 camera.setReadMode()
-camera.setImage()
+camera.setImage()  # imporve this logging
 
 # TODO: filterwheel
 
@@ -105,20 +106,21 @@ isExist = os.path.exists(data_folder_name)
 if not isExist:
     # Create a new directory
     os.makedirs(data_folder_name)
-imageTaker = Image_Helper(data_folder_name, camera)
+### JJM the (2,2) at the end is XBin and YBin. These need to be parameters sent in from the config file and also needs to
+### affect the CCD setup
+imageTaker = Image_Helper(data_folder_name, camera,
+                          config['site'], config['latitude'], config['longitude'], config['instr_name'], 2, 2)
 
-if (datetime.utcnow() - sunset) < timedelta(minutes = 10):
+if (datetime.utcnow() - sunset) < timedelta(minutes=10):
     # take dark, bias, laser image
-    ### JJM NOTE, AGAIN, THESE LOGGING ENTIRES SHOULD PROBABLY LIVE INSIDE THE FUNCTIONS
-    logging.info('Taking initial bias image')
-    bias_image = imageTaker.take_initial_image(config["bias_expose"], 0, 0)
-    logging.info('Taking initial dark image')
-    dark_image = imageTaker.take_initial_image(config["dark_expose"], 0, 0)
-    logging.info('Taking initial laser image')
+    # JJM NOTE, AGAIN, THESE LOGGING ENTIRES SHOULD PROBABLY LIVE INSIDE THE FUNCTIONS
+    bias_image = imageTaker.take_bias_image(config["bias_expose"], 0, 0)
+    dark_image = imageTaker.take_dark_image(config["dark_expose"], 0, 0)
     laser_image = imageTaker.take_laser_image(
         config["laser_expose"], skyscanner, lasershutter, config["azi_laser"], config["zen_laser"])
 else:
-    logging.info('Skipped initial images because we are more than 10 minutes after sunset')
+    logging.info(
+        'Skipped initial images because we are more than 10 minutes after sunset')
 
 # Start main loop
 image_count = 1
@@ -128,22 +130,21 @@ while (datetime.now() <= sunrise):
     for observation in observations:
         # perform tasks as specified
         # check for sunrise
-        # TODO
         if (datetime.now() >= sunrise):
             logging.info('Inside observation loop, but after sunrise! Exiting')
             break
-        logging.info('Moving SkyScanner to: %.2f, %.2f' % (observation['skyScannerLocation'][0], observation['skyScannerLocation'][1]))
+        logging.info('Moving SkyScanner to: %.2f, %.2f' % (
+            observation['skyScannerLocation'][0], observation['skyScannerLocation'][1]))
         skyscanner.set_pos_real(
             observation["skyScannerLocation"][0], observation["skyScannerLocation"][1])
         logging.info('Taking sky exposure')
-        new_image = imageTaker.take_normal_image(
-            observation["exposureTime"], observation['skyScannerLocation'][0], observation['skyScannerLocation'][1])
+        new_image = imageTaker.take_normal_image(observation['imageTag'],
+                                                 observation["exposureTime"], observation['skyScannerLocation'][0], observation['skyScannerLocation'][1])
         image_count = image_count + 1
         logging.info('Taking laser image')
-        laser_image2 = imageTaker.take_laser_image(config["laser_expose"], skyscanner, lasershutter, config["azi_laser"], config["zen_laser"])
+        laser_image2 = imageTaker.take_laser_image(
+            config["laser_expose"], skyscanner, lasershutter, config["azi_laser"], config["zen_laser"])
         logging.info('image' + str(image_count))
-        # take laser
-
 
 # Prepare to sleep
 
