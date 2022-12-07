@@ -5,7 +5,7 @@ observations = [
         "laserShutter": False,
         "imageTag": "XR",
         "exposureTime": 300,
-        "desiredIntensity": 1.0,
+        "desiredIntensity": 10.5,
         "lastExpTime": 00.00,
         "lastIntensity": 0.0
         # log position N<S<E<W
@@ -17,7 +17,7 @@ observations = [
         "laserShutter": False,
         "imageTag": "XR",
         "exposureTime": 300,
-        "desiredIntensity": 1.0,
+        "desiredIntensity": 10.5,
         "lastExpTime": 00.00,
         "lastIntensity": 0.0
     },
@@ -28,7 +28,7 @@ observations = [
         "laserShutter": False,
         "imageTag": "XR",
         "exposureTime": 300,
-        "desiredIntensity": 1.0,
+        "desiredIntensity": 10.5,
         "lastExpTime": 00.00,
         "lastIntensity": 0.0
     },
@@ -39,7 +39,7 @@ observations = [
         "laserShutter": False,
         "imageTag": "XR",
         "exposureTime": 300,
-        "desiredIntensity": 1.0,
+        "desiredIntensity": 10.5,
         "lastExpTime": 00.00,
         "lastIntensity": 0.0
     },
@@ -50,7 +50,7 @@ observations = [
         "laserShutter": False,
         "imageTag": "XR",
         "exposureTime": 300,
-        "desiredIntensity": 1.0,
+        "desiredIntensity": 10.5,
         "lastExpTime": 00.00,
         "lastIntensity": 0.0
     }

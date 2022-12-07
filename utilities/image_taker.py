@@ -14,7 +14,7 @@ class Image_Helper:
     instrument = None
     XBinning = None
     YBinning = None
-    def __init__(self, folderName, camera, site, latitude, longitude, instrument, xbin, ybin) -> None:
+    def __init__(self, folderName, camera, site, latitude, longitude, instrument, xbin, ybin, skyAlert) -> None:
         self.counter = {  # JJM: NEED TO FIND A WAY TO SELF-INITIALIZE THESE IN CASE WE DEFINE A NEW TYPE
             "XR": 0,
             "D": 0,
@@ -29,8 +29,9 @@ class Image_Helper:
         self.instrument = instrument
         self.XBinning = xbin
         self.YBinning = ybin
+        self.skyAlert = skyAlert
 
-    def save_image(self, type, imgData, exp, az, ze):
+    def save_image(self, type, imgData, exp, az, ze, startTime):
         data_files = h5py.File(self.folderName + '/' +
                                self.site + '_' + type + '_' + datetime.utcnow().strftime('%Y%m%d_%H%M%S') + '.hdf5', 'w')
         # Log
@@ -41,16 +42,22 @@ class Image_Helper:
         # JJM SAME AS ABOVE (READ THE VALUE FROM THE SKYSCANNER
         f.attrs['zeAngle'] = ze
         # JJM THIS NEEDS TO BE THE TIME THE EXPOSURE STARTED, NOT ENDED
-        f.attrs['LocalTime'] = str(datetime.now()) # TODO: start time 
+        f.attrs['LocalTime'] = startTime 
         f.attrs['CCDTemperature'] = self.camera.getTemperature()
-        f.attrs['OutsideTemperature'] = 20
-        f.attrs['Pressure'] = 20
         f.attrs['SiteName'] = self.site
         f.attrs['SiteLatitude'] = self.latitude
         f.attrs['SiteLongitude'] = self.longitude
         f.attrs['Instrument'] = self.instrument
         f.attrs['XBinning'] = self.XBinning
         f.attrs['YBinning'] = self.YBinning
+
+        # SkyAlert data
+        f.attrs['AmbientTemperature (C)'] = self.skyAlert.getAmbientTemperature()
+        f.attrs['OutsideTemperature (C)'] = self.skyAlert.getSkyTemperature()
+        f.attrs['Pressure (Pa)'] = self.skyAlert.getPressure()
+        f.attrs['Humidity (%)'] = self.skyAlert.getHumidity()
+        # do we need wind speed, dampness, brightness? What unit? 
+
 
         data_files.close()
         self.counter[type] += 1
@@ -60,11 +67,12 @@ class Image_Helper:
         logging.info('Taking initial dark image')
         self.camera.setShutter(mode=2)
         self.camera.setExposureTime(exposure)
+        startTime = str(datetime.now())
         self.camera.startAcquisition()
         while (self.camera.getStatus() == "DRV_ACQUIRING"):
             sleep(2)
         nparr = self.camera.getImage()
-        self.save_image("D", nparr, exposure, az, ze)
+        self.save_image("D", nparr, exposure, az, ze, startTime)
         logging.info('Dark image taken')
         return nparr
 
@@ -73,11 +81,12 @@ class Image_Helper:
         logging.info('Taking initial bias image')
         self.camera.setShutter(mode=2)
         self.camera.setExposureTime(exposure)
+        startTime = str(datetime.now())
         self.camera.startAcquisition()
         while (self.camera.getStatus() == "DRV_ACQUIRING"):
             sleep(2)
         nparr = self.camera.getImage()
-        self.save_image("B", nparr, exposure, az, ze)
+        self.save_image("B", nparr, exposure, az, ze, startTime)
         logging.info('Initial bias image taken')
         return nparr
 
@@ -85,11 +94,12 @@ class Image_Helper:
         # keeps shutter open by default
         self.camera.setShutter()
         self.camera.setExposureTime(exposure)
+        startTime = str(datetime.now())
         self.camera.startAcquisition()
         while (self.camera.getStatus() == "DRV_ACQUIRING"):
             sleep(2)
         nparr = self.camera.getImage()
-        self.save_image(image_tag, nparr, exposure, az, ze)
+        self.save_image(image_tag, nparr, exposure, az, ze, startTime)
         return nparr
 
     # function for laser image
@@ -100,10 +110,11 @@ class Image_Helper:
         lasershutter.open_shutter()
         self.camera.setShutter()
         self.camera.setExposureTime(exposure)
+        startTime = str(datetime.now())
         self.camera.startAcquisition()
         while (self.camera.getStatus() == "DRV_ACQUIRING"):
             sleep(2)
         nparr = self.camera.getImage()
         lasershutter.close_shutter()
-        self.save_image("L", nparr, exposure, az, zen)
+        self.save_image("L", nparr, exposure, az, zen, startTime)
         return nparr

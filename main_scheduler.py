@@ -5,27 +5,31 @@ from time import sleep
 import ephem
 from datetime import datetime, timedelta, timezone, date
 import utilities.time_helper
-from config import config
-from schedule import observations
 import sys
 import os
-from components.camera import getCamera
-from components.lasershutter_i2c.shutter import LaserShutter
-from components.sky_scanner import SkyScanner
 from pathlib import Path
 import signal
 
+from config import config
+from schedule import observations
+
+from components.camera import getCamera
+from components.lasershutter_i2c.shutter import LaserShutter
+from components.sky_scanner import SkyScanner
+from components.skyalert import SkyAlert
+from components.powercontrol import PowerControl
+# from filterwheel import FilterWheel
+
+
+
 
 # logger file
-
 d = datetime.utcnow()
 log_name = config['log_dir'] + config['site'] + \
     d.strftime('_%Y%m%d_%H%M%S.log')
 logging.basicConfig(filename=log_name,
                     encoding='utf-8', format='%(asctime)s %(message)s',  level=logging.DEBUG)
 
-
-# from filterwheel import FilterWheel
 
 
 timeHelper = utilities.time_helper.TimeHelper()
@@ -37,25 +41,37 @@ logging.info('Sunset time set to ' + str(sunset))
 # find location of sun and moon
 # JJM NOTE: THIS WON'T WORK. NEED TO SET THE OBSERVER LOCATION. THIS SEEMS TO BE DONE IN THE TIMEHELPER
 # PROBABLY WANT TO USE THAT OBSERVER SO WE ONLY HAVE ONE WE ARE KEEPING TRACK OF.
+# TODO: location with angle
 d = datetime.utcnow()
-sun, moon = ephem.Sun(), ephem.Moon()
-sun_location = sun.compute(d)
-logging.info('Location of the sun is ' + sun_location)
-moon_location = moon.compute(d)
-logging.info('Location of the moon is ' + moon_location)
+#sun, moon = ephem.Sun(), ephem.Moon()
+#sun_location = sun.compute(d)
+#logging.info('Location of the sun is ' + sun_location)
+#moon_location = moon.compute(d)
+#logging.info('Location of the moon is ' + moon_location)
 
 # TODO: close laser_shutter
-
+# TODO: Turn on power for components
 housekeeping = timeHelper.getHousekeeping()
-logging.info('Housekeeping time is ' + moon_location)
+#logging.info('Housekeeping time is ' + moon_location)
+
+
+timeHelper.waitUntilHousekeeping(deltaMinutes = -30) # 30 min before house keeping time
+powerControl = PowerControl()
+# powerControl.turnOn(config['AndorPowerPort'])
+# powerControl.turnOn(config['SkyScannerPowerPort'])
+# powerControl.turnOn(config['LaserShutterPowerPort'])
+# powerControl.turnOn(config['AnythingelsePowerPort'])
+
+
 logging.info('Waiting until Housekeeping time: ' + str(housekeeping))
 timeHelper.waitUntilHousekeeping()
 
+
+
+
+
 # housekeeping operations
-
-
 # initialise skyscanner, camera, filterwheel
-
 
 # Housekeeping
 # JJM NOTE, THESE LOG ENTRIES WOULD PROBABLY BETTER LIVE INSIDE THE FUNCTIONS.
@@ -109,7 +125,7 @@ if not isExist:
 ### JJM the (2,2) at the end is XBin and YBin. These need to be parameters sent in from the config file and also needs to
 ### affect the CCD setup
 imageTaker = Image_Helper(data_folder_name, camera,
-                          config['site'], config['latitude'], config['longitude'], config['instr_name'], 2, 2)
+                          config['site'], config['latitude'], config['longitude'], config['instr_name'], 2, 2, SkyAlert())
 
 if (datetime.utcnow() - sunset) < timedelta(minutes=10):
     # take dark, bias, laser image
@@ -118,9 +134,15 @@ if (datetime.utcnow() - sunset) < timedelta(minutes=10):
     dark_image = imageTaker.take_dark_image(config["dark_expose"], 0, 0)
     laser_image = imageTaker.take_laser_image(
         config["laser_expose"], skyscanner, lasershutter, config["azi_laser"], config["zen_laser"])
+    if config['laser_timedelta'] is not None:
+        # save the time
+        config['laser_lasttime'] = datetime.utcnow()
 else:
     logging.info(
         'Skipped initial images because we are more than 10 minutes after sunset')
+    if config['laser_timedelta'] is not None:
+        # save the time
+        config['laser_lasttime'] = datetime.utcnow()
 
 # Start main loop
 image_count = 1
@@ -141,10 +163,30 @@ while (datetime.now() <= sunrise):
         new_image = imageTaker.take_normal_image(observation['imageTag'],
                                                  observation["exposureTime"], observation['skyScannerLocation'][0], observation['skyScannerLocation'][1])
         image_count = image_count + 1
-        logging.info('Taking laser image')
-        laser_image2 = imageTaker.take_laser_image(
-            config["laser_expose"], skyscanner, lasershutter, config["azi_laser"], config["zen_laser"])
-        logging.info('image' + str(image_count))
+
+        # Check if we should take a laser image
+        take_laser = False
+        logging.info('Time since last laser ' + str(datetime.utcnow() - config['laser_lasttime']))
+        logging.info(str(datetime.utcnow()))
+        logging.info(str(config['laser_lasttime']))
+        logging.info(str(config['laser_timedelta']))
+        logging.info((datetime.utcnow() - config['laser_lasttime']) > config['laser_timedelta'])
+#        if config['laser_timedelta'] is None:
+#            print('None')
+#            take_laser = True
+#        elif (datetime.utcnow() - config['laser_lasttime']) > config['laser_timedelta']:
+        take_laser = (datetime.utcnow() - config['laser_lasttime']) > config['laser_timedelta']
+        if ((datetime.utcnow() - config['laser_lasttime']) > config['laser_timedelta']):
+            print('Here')
+            take_laser = True
+        logging.info('take_laser is ' + str(take_laser))
+
+        if take_laser:
+            logging.info('Taking laser image')
+            laser_image2 = imageTaker.take_laser_image(
+                config["laser_expose"], skyscanner, lasershutter, config["azi_laser"], config["zen_laser"])
+            logging.info('image' + str(image_count))
+            config['laser_lasttime'] = datetime.utcnow()
 
 # Prepare to sleep
 
@@ -158,3 +200,10 @@ logging.info('Warming up CCD')
 camera.turnOffCooler()
 logging.info('Shutting down CCD')
 camera.shutDown()
+
+# TODO: Turn off power for components
+# Wait until camera warm up?
+# powerControl.turnOff(config['AndorPowerPort'])
+# powerControl.turnOff(config['SkyScannerPowerPort'])
+# powerControl.turnOff(config['LaserShutterPowerPort'])
+# powerControl.turnOff(config['AnythingelsePowerPort'])

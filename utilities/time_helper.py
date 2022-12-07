@@ -26,8 +26,8 @@ class TimeHelper:
     def getHousekeeping(self):
         return self.getSunset() - timedelta(minutes=config["startHousekeeping"])
 
-    def waitUntilHousekeeping(self):
-        while (datetime.now() < self.getHousekeeping()):
+    def waitUntilHousekeeping(self, deltaMinutes=0):
+        while (datetime.now() < self.getHousekeeping() + timedelta(minutes=deltaMinutes)):
             sleep(5)
         return
 

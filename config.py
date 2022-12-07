@@ -1,5 +1,5 @@
 # Getting parameters
-
+from datetime import timedelta
 
 config = {
     "site": "UAO",
@@ -20,6 +20,7 @@ config = {
     "zen_laser": 180,  # ask prof
     "data_dir": "/home/airglow/airglow/collected-data/",
     "log_dir": "/home/airglow/airglow/logfiles/",
-
+    "laser_timedelta": timedelta(minutes = 15),
+    "laser_lasttime": None,
 
 }

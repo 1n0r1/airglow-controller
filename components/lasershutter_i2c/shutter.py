@@ -6,11 +6,10 @@ import logging
 
 class LaserShutter():
     ser = None
-
     def __init__(self):
         try:
             self.ser = serial.Serial(
-                port='/dev/ttyACM1',
+                port='/dev/ttyACM0',
                 baudrate=9600,
                 parity=serial.PARITY_NONE,
                 stopbits=serial.STOPBITS_ONE,
@@ -19,7 +18,7 @@ class LaserShutter():
             )
         except:
             print("Can't open serial port")
-        logging.info('Initialized SkyScanner')
+        logging.info('Initialized LaserShutter')
 
     def open_shutter(self):
         self.close_shutter()
@@ -27,9 +26,11 @@ class LaserShutter():
         sleep(2)
         res = self.ser.readline()
         print(res.decode())
+        logging.info('LaserShutter response: ' + res.decode())
 
     def close_shutter(self):
         self.ser.write('close\n'.encode())
         sleep(2)
         res = self.ser.readline()
         print(res.decode())
+        logging.info('LaserShutter response: ' + res.decode())
