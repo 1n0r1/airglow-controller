@@ -4,3 +4,4 @@ cython
 numpy
 pythonnet
 zugbruecke
+scipy

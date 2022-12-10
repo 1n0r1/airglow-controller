@@ -112,3 +112,12 @@ class AndorCamera:
         print(re[0])
 
         return re[1]
+
+    def setShiftSpeed(self, indexH=2, indexV=2, preAmpGain=2, ttype=0):
+        re = andorsdk.setHSSpeed(indexH, ttype)
+        logging.info("CCD set horizontal shift speed: " + str(re))
+        re = andorsdk.setVSSpeed(indexV)
+        logging.info("CCD set vertical shift speed: " + str(re))
+        re = andorsdk.setPreAmpGain(preAmpGain)
+        logging.info("CCD set preamp gain: " + str(re))
+

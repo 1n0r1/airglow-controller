@@ -1,20 +1,21 @@
 import logging
-import h5py
 from utilities.image_taker import Image_Helper
 from time import sleep
-import ephem
 from datetime import datetime, timedelta, timezone, date
 import utilities.time_helper
 import sys
 import os
-from pathlib import Path
 import signal
+import scipy
+import numpy
+
+
 
 from config import config
 from schedule import observations
 
 from components.camera import getCamera
-from components.lasershutter_i2c.shutter import LaserShutter
+from components.lasershutter.shutter import LaserShutter
 from components.sky_scanner import SkyScanner
 from components.skyalert import SkyAlert
 from components.powercontrol import PowerControl
@@ -49,21 +50,20 @@ d = datetime.utcnow()
 #moon_location = moon.compute(d)
 #logging.info('Location of the moon is ' + moon_location)
 
-# TODO: close laser_shutter
-# TODO: Turn on power for components
-housekeeping = timeHelper.getHousekeeping()
 #logging.info('Housekeeping time is ' + moon_location)
 
 
+
 timeHelper.waitUntilHousekeeping(deltaMinutes = -30) # 30 min before house keeping time
+
 powerControl = PowerControl()
-# powerControl.turnOn(config['AndorPowerPort'])
-# powerControl.turnOn(config['SkyScannerPowerPort'])
+powerControl.turnOn(config['AndorPowerPort'])
+powerControl.turnOn(config['SkyScannerPowerPort'])
+powerControl.turnOn(config['LaserPowerPort'])
 # powerControl.turnOn(config['LaserShutterPowerPort'])
-# powerControl.turnOn(config['AnythingelsePowerPort'])
 
 
-logging.info('Waiting until Housekeeping time: ' + str(housekeeping))
+logging.info('Waiting until Housekeeping time: ' + str(timeHelper.getHousekeeping()))
 timeHelper.waitUntilHousekeeping()
 
 
@@ -95,12 +95,13 @@ def signal_handler(sig, frame):
     logging.info('Exiting')
     sys.exit(0)
 
-
 signal.signal(signal.SIGINT, signal_handler)
 # logging.info('Homing Skyscanner')
 skyscanner.go_home()
+
 camera.setReadMode()
 camera.setImage()  # imporve this logging
+camera.setShiftSpeed()
 
 # TODO: filterwheel
 
@@ -127,7 +128,7 @@ if not isExist:
 imageTaker = Image_Helper(data_folder_name, camera,
                           config['site'], config['latitude'], config['longitude'], config['instr_name'], 2, 2, SkyAlert())
 
-if (datetime.utcnow() - sunset) < timedelta(minutes=10):
+if datetime.utcnow() < (sunset + timedelta(minutes=10)):
     # take dark, bias, laser image
     # JJM NOTE, AGAIN, THESE LOGGING ENTIRES SHOULD PROBABLY LIVE INSIDE THE FUNCTIONS
     bias_image = imageTaker.take_bias_image(config["bias_expose"], 0, 0)
@@ -155,13 +156,45 @@ while (datetime.now() <= sunrise):
         if (datetime.now() >= sunrise):
             logging.info('Inside observation loop, but after sunrise! Exiting')
             break
+
+        
         logging.info('Moving SkyScanner to: %.2f, %.2f' % (
             observation['skyScannerLocation'][0], observation['skyScannerLocation'][1]))
         skyscanner.set_pos_real(
-            observation["skyScannerLocation"][0], observation["skyScannerLocation"][1])
+            observation["skyScannerLocation"][0], observation['skyScannerLocation'][1])
         logging.info('Taking sky exposure')
+
+
+        if (observation['lastIntensity'] == 0 or observation['lastExpTime'] == 0):
+            observation['exposureTime'] = 300
+        else:
+            observation['exposureTime'] = observation['desiredIntensity']*observation['lastExpTime']/observation['lastIntensity']
+
+        logging.info('Calculated exposure time: ' + str(observation['exposureTime']))
+
         new_image = imageTaker.take_normal_image(observation['imageTag'],
-                                                 observation["exposureTime"], observation['skyScannerLocation'][0], observation['skyScannerLocation'][1])
+                                                 observation['exposureTime'],
+                                                 observation['skyScannerLocation'][0],
+                                                 observation['skyScannerLocation'][1])
+
+
+        # TODO: Will need to put into config
+        i1 = 150
+        j1 = 150
+        i2 = 200
+        j2 = 200
+        N = 5
+        image_sub = scipy.signal.convolve2d(new_image[i1:i2,j1:j2], numpy.ones((N,N))/N**2, mode='valid')
+        image_intensity = numpy.percentile(image_sub, 75) - numpy.percentile(image_sub, 25)
+
+        observation['lastIntensity'] = image_intensity
+        observation['lastExpTime'] = observation['exposureTime']
+
+        logging.info('Image intensity: ' + str(image_intensity))
+
+
+
+
         image_count = image_count + 1
 
         # Check if we should take a laser image
@@ -196,14 +229,19 @@ while (datetime.now() <= sunrise):
 
 logging.info('Sending SkyScanner home')
 skyscanner.go_home()
+
 logging.info('Warming up CCD')
 camera.turnOffCooler()
+while (camera.getTemperature() < -20):
+    logging.info('CCD Temperature: ' + str(camera.getTemperature()))
+    sleep(10)
+
 logging.info('Shutting down CCD')
 camera.shutDown()
 
-# TODO: Turn off power for components
-# Wait until camera warm up?
-# powerControl.turnOff(config['AndorPowerPort'])
-# powerControl.turnOff(config['SkyScannerPowerPort'])
+powerControl.turnOff(config['AndorPowerPort'])
+powerControl.turnOff(config['SkyScannerPowerPort'])
+powerControl.turnOff(config['LaserPowerPort'])
 # powerControl.turnOff(config['LaserShutterPowerPort'])
-# powerControl.turnOff(config['AnythingelsePowerPort'])
+
+logging.info('Executed flawlessly, exitting')

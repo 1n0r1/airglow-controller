@@ -23,4 +23,10 @@ config = {
     "laser_timedelta": timedelta(minutes = 15),
     "laser_lasttime": None,
 
+
+    # Power Ports
+    "AndorPowerPort": 2,
+    "SkyScannerPowerPort": 4,
+    "LaserPowerPort": 5,
+    "LaserShutterPowerPort": 8
 }

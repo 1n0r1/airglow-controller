@@ -26,6 +26,19 @@ cdef extern from "./include/atmcdLXd.h":
     unsigned int GetAcquiredData(at_32 * arr, at_u32 size)
     unsigned int GetMostRecentImage(at_32 * arr, at_u32 size)
 
+
+    unsigned int GetNumberHSSpeeds(int channel, int typ, int * speeds)
+    unsigned int GetNumberVSSpeeds(int * speeds)
+
+    unsigned int GetHSSpeed(int channel, int typ, int index, float * speed)
+    unsigned int GetVSSpeed(int index, float * speed)
+
+    unsigned int SetHSSpeed(int typ, int index)
+    unsigned int SetVSSpeed(int index)
+    unsigned int SetPreAmpGain(int index)
+
+
+
     cdef int DRV_ERROR_CODES
     cdef int DRV_SUCCESS
     cdef int DRV_VXDNOTINSTALLED

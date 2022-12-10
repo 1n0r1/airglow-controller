@@ -240,3 +240,18 @@ def getImage(hbin=2, vbin=2, hstart=1, hend=1024, vstart=1, vend=1024):
 
     return (code2msg(sta), re)
 
+def setHSSpeed(index=2, ttype=0):
+    # ttype:
+    # 0 electron multiplication/Conventional(clara).
+    # 1 conventional/Extended NIR mode(clara).
+    sta = andorsdk.SetHSSpeed(ttype, index)
+    return code2msg(sta)
+
+def setVSSpeed(index=2):
+    sta = andorsdk.SetVSSpeed(index)
+    return code2msg(sta)
+
+def setPreAmpGain(index=2):
+    sta = andorsdk.SetPreAmpGain(index)
+    return code2msg(sta)
+

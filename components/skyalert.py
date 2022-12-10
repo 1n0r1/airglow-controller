@@ -1,11 +1,26 @@
 import requests
+from time import sleep
+
+from requests.adapters import HTTPAdapter, Retry
 
 class SkyAlert():
     def __init__(self, address='http://192.168.1.2:81') -> None:
         self.address = address
 
     def getList(self):
-        return requests.get(self.address).text.split()
+        arr = []
+
+        count = 5
+        while count != 0:
+            try:
+                requests.get(url=self.address, timeout=10).text.split()
+                count = 0
+            except:
+                count = count - 1
+                sleep(5)
+        if len(arr) == 0:
+            arr = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        return arr
 
     def getAmbientTemperature(self) -> float:
         # Unit: Degree C
