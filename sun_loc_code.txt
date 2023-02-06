@@ -4,7 +4,7 @@ loc = ephem.Observer()
 >>> loc.lon = "-88.2073"
 >>> loc.elevation = 222
 >>> loc.horizon = "-8.0"
->>> loc.date = ephem.Date(datetime.utcnow())
+>>> loc.date = ephem.Date(datetime.now())
 >>> sun_loc = ephem.Sun(loc)
 >>> sun_loc
 <Sun "Sun" at 0x7f5c11ee8fe0>

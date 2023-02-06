@@ -6,7 +6,7 @@ from adafruit_motor import stepper
 import logging
 from datetime import datetime
 
-logging.basicConfig(filename='/home/airglow/airglow_shutter_controller/logs/' + datetime.utcnow().strftime('_%Y%m%d_%H%M%S.log'), 
+logging.basicConfig(filename='/home/airglow/airglow_shutter_controller/logs/' + datetime.now().strftime('_%Y%m%d_%H%M%S.log'), 
                     format='%(asctime)s %(message)s', 
                     encoding='utf-8', 
                     level=logging.DEBUG)

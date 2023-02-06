@@ -13,7 +13,9 @@ class PowerControl:
     def turnOn(self, port):
         self.switch.on(port)
         logging.info("Powered on port " + str(port))
+        print("turned on")
         
     def turnOff(self, port):
         self.switch.off(port)
         logging.info("Powered off port " + str(port))
+        print("turned off")

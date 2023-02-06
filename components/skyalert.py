@@ -1,6 +1,6 @@
 import requests
 from time import sleep
-
+import logging
 from requests.adapters import HTTPAdapter, Retry
 
 class SkyAlert():
@@ -13,13 +13,14 @@ class SkyAlert():
         count = 5
         while count != 0:
             try:
-                requests.get(url=self.address, timeout=10).text.split()
+                arr = requests.get(url=self.address, timeout=10).text.split()
                 count = 0
             except:
                 count = count - 1
                 sleep(5)
         if len(arr) == 0:
             arr = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+            logging.error('Cannot communicate with SkyAlert')
         return arr
 
     def getAmbientTemperature(self) -> float:

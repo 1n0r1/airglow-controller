@@ -33,7 +33,7 @@ class Image_Helper:
 
     def save_image(self, type, imgData, exp, az, ze, startTime):
         data_files = h5py.File(self.folderName + '/' +
-                               self.site + '_' + type + '_' + datetime.utcnow().strftime('%Y%m%d_%H%M%S') + '.hdf5', 'w')
+                               self.site + '_' + type + '_' + datetime.now().strftime('%Y%m%d_%H%M%S') + '.hdf5', 'w')
         # Log
         f = data_files.create_dataset("image", data=imgData)
         f.attrs['ExposureTime'] = exp
@@ -41,7 +41,6 @@ class Image_Helper:
         f.attrs['azAngle'] = az
         # JJM SAME AS ABOVE (READ THE VALUE FROM THE SKYSCANNER
         f.attrs['zeAngle'] = ze
-        # JJM THIS NEEDS TO BE THE TIME THE EXPOSURE STARTED, NOT ENDED
         f.attrs['LocalTime'] = startTime 
         f.attrs['CCDTemperature'] = self.camera.getTemperature()
         f.attrs['SiteName'] = self.site
@@ -69,6 +68,7 @@ class Image_Helper:
         self.camera.setExposureTime(exposure)
         startTime = str(datetime.now())
         self.camera.startAcquisition()
+        sleep(exposure)
         while (self.camera.getStatus() == "DRV_ACQUIRING"):
             sleep(2)
         nparr = self.camera.getImage()
@@ -83,6 +83,7 @@ class Image_Helper:
         self.camera.setExposureTime(exposure)
         startTime = str(datetime.now())
         self.camera.startAcquisition()
+        sleep(exposure)
         while (self.camera.getStatus() == "DRV_ACQUIRING"):
             sleep(2)
         nparr = self.camera.getImage()
@@ -96,6 +97,7 @@ class Image_Helper:
         self.camera.setExposureTime(exposure)
         startTime = str(datetime.now())
         self.camera.startAcquisition()
+        sleep(exposure)
         while (self.camera.getStatus() == "DRV_ACQUIRING"):
             sleep(2)
         nparr = self.camera.getImage()
@@ -112,6 +114,7 @@ class Image_Helper:
         self.camera.setExposureTime(exposure)
         startTime = str(datetime.now())
         self.camera.startAcquisition()
+        sleep(exposure)
         while (self.camera.getStatus() == "DRV_ACQUIRING"):
             sleep(2)
         nparr = self.camera.getImage()
