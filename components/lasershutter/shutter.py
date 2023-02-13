@@ -14,6 +14,7 @@ class LaserShutter():
                 parity=serial.PARITY_NONE,
                 stopbits=serial.STOPBITS_ONE,
                 bytesize=serial.EIGHTBITS,
+                write_timeout = 1,
                 timeout=1
             )
         except:
@@ -21,16 +22,22 @@ class LaserShutter():
         logging.info('Initialized LaserShutter')
 
     def open_shutter(self):
-        self.close_shutter()
-        self.ser.write('open\n'.encode())
-        sleep(2)
-        res = self.ser.readline()
-        print(res.decode())
-        logging.info('LaserShutter response: ' + res.decode())
+        try:
+            self.close_shutter()
+            self.ser.write('open\n'.encode())
+            sleep(2)
+            res = self.ser.readline()
+            print(res.decode())
+            logging.info('LaserShutter response: ' + res.decode())
+        except:
+            logging.error('Cannot write to LaserShutter')
 
     def close_shutter(self):
-        self.ser.write('close\n'.encode())
-        sleep(2)
-        res = self.ser.readline()
-        print(res.decode())
-        logging.info('LaserShutter response: ' + res.decode())
+        try:
+            self.ser.write('close\n'.encode())
+            sleep(2)
+            res = self.ser.readline()
+            print(res.decode())
+            logging.info('LaserShutter response: ' + res.decode())
+        except:
+            logging.error('Cannot write to LaserShutter')
