@@ -7,7 +7,6 @@ import numpy
 from time import sleep
 from datetime import datetime, timedelta
 
-
 from config import config, skyscan_config
 from schedule import observations
 
@@ -23,9 +22,7 @@ from components.powercontrol import PowerControl
 
 
 # logger file
-d = datetime.now()
-log_name = config['log_dir'] + config['site'] + \
-    d.strftime('_%Y%m%d_%H%M%S.log')
+log_name = config['log_dir'] + config['site'] + datetime.now().strftime('_%Y%m%d_%H%M%S.log')
 logging.basicConfig(filename=log_name, encoding='utf-8',
                     format='%(asctime)s %(message)s',  level=logging.DEBUG)
 
@@ -35,19 +32,6 @@ sunrise = timeHelper.getSunrise()
 logging.info('Sunrise time set to ' + str(sunrise))
 sunset = timeHelper.getSunset()
 logging.info('Sunset time set to ' + str(sunset))
-
-# find location of sun and moon
-# JJM NOTE: THIS WON'T WORK. NEED TO SET THE OBSERVER LOCATION. THIS SEEMS TO BE DONE IN THE TIMEHELPER
-# PROBABLY WANT TO USE THAT OBSERVER SO WE ONLY HAVE ONE WE ARE KEEPING TRACK OF.
-# TODO: location with angle
-d = datetime.now()
-#sun, moon = ephem.Sun(), ephem.Moon()
-#sun_location = sun.compute(d)
-#logging.info('Location of the sun is ' + sun_location)
-#moon_location = moon.compute(d)
-#logging.info('Location of the moon is ' + moon_location)
-
-#logging.info('Housekeeping time is ' + moon_location)
 
 
 # 30 min before house keeping time
@@ -66,18 +50,14 @@ timeHelper.waitUntilHousekeeping()
 
 
 # housekeeping operations
-# initialise skyscanner, camera, filterwheel
 
 # Housekeeping
 # JJM NOTE, THESE LOG ENTRIES WOULD PROBABLY BETTER LIVE INSIDE THE FUNCTIONS.
 logging.info('Initializing LaserShutter')
 lasershutter = LaserShutter()
-# logging.info('Initializing SkyScanner')
-print('Init SkyScanner')
-# JJM NOTE, SOME OF THESE PARAMETERS (MAYBE ALL) SHOULD BE IN THE CONFIG FILE. MAYBE
-# CREATE ANOTHER DICTIONARY TO STORES THESE? "skyscan_config"?
+logging.info('Initializing SkyScanner')
 skyscanner = SkyScanner(skyscan_config['max_steps'], skyscan_config['azi_offset'], skyscan_config['zeni_offset'], skyscan_config['azi_world'], skyscan_config['zeni_world'], skyscan_config['number_of_steps'], skyscan_config['port_location'])
-print('Init CCD')
+logging.info('Initializing CCD')
 camera = getCamera("Andor")
 
 
@@ -85,27 +65,21 @@ def signal_handler(sig, frame):
     skyscanner.go_home()
     camera.turnOffCooler()
     camera.shutDown()
-    print("running the exit")
     logging.info('Exiting')
     sys.exit(0)
-
-
 signal.signal(signal.SIGINT, signal_handler)
-# logging.info('Homing Skyscanner')
+
+
 skyscanner.go_home()
 
 camera.setReadMode()
-camera.setImage()  # imporve this logging
+camera.setImage()
 camera.setShiftSpeed()
-
-
-# sets temperature
 camera.setTemperature(config["temp_setpoint"])
 camera.turnOnCooler()
 logging.info('Set camera temperature to %.2f C' % config["temp_setpoint"])
 
 
-# Wait until sunset
 logging.info("Waiting for sunset: " + str(sunset))
 timeHelper.waitUntilStartTime()
 logging.info('Sunset time start')
@@ -117,14 +91,13 @@ isExist = os.path.exists(data_folder_name)
 if not isExist:
     # Create a new directory
     os.makedirs(data_folder_name)
+
 # JJM the (2,2) at the end is XBin and YBin. These need to be parameters sent in from the config file and also needs to
 # affect the CCD setup
 imageTaker = Image_Helper(data_folder_name, camera,
                           config['site'], config['latitude'], config['longitude'], config['instr_name'], 2, 2, SkyAlert())
 
 if datetime.now() < (sunset + timedelta(minutes=10)):
-    # take dark, bias, laser image
-    # JJM NOTE, AGAIN, THESE LOGGING ENTIRES SHOULD PROBABLY LIVE INSIDE THE FUNCTIONS
     bias_image = imageTaker.take_bias_image(config["bias_expose"], 0, 0)
     dark_image = imageTaker.take_dark_image(config["dark_expose"], 0, 0)
     laser_image = imageTaker.take_laser_image(
@@ -133,20 +106,15 @@ if datetime.now() < (sunset + timedelta(minutes=10)):
         # save the time
         config['laser_lasttime'] = datetime.now()
 else:
-    logging.info(
-        'Skipped initial images because we are more than 10 minutes after sunset')
+    logging.info('Skipped initial images because we are more than 10 minutes after sunset')
     if config['laser_timedelta'] is not None:
         # save the time
         config['laser_lasttime'] = datetime.now()
 
-# Start main loop
-image_count = 1
+
+last_home_time = datetime.now()
 while (datetime.now() <= sunrise):
-    # take images
-    # TODO
     for observation in observations:
-        # perform tasks as specified
-        # check for sunrise
         if (datetime.now() >= sunrise):
             logging.info('Inside observation loop, but after sunrise! Exiting')
             break
@@ -191,42 +159,24 @@ while (datetime.now() <= sunrise):
 
         logging.info('Image intensity: ' + str(image_intensity))
 
-        image_count = image_count + 1
-
         # Check if we should take a laser image
-        take_laser = False
-        logging.info('Time since last laser ' +
-                     str(datetime.now() - config['laser_lasttime']))
-        logging.info(str(datetime.now()))
-        logging.info(str(config['laser_lasttime']))
-        logging.info(str(config['laser_timedelta']))
-        logging.info(
-            (datetime.now() - config['laser_lasttime']) > config['laser_timedelta'])
-#        if config['laser_timedelta'] is None:
-#            print('None')
-#            take_laser = True
-#        elif (datetime.now() - config['laser_lasttime']) > config['laser_timedelta']:
-        take_laser = (datetime.now() -
-                      config['laser_lasttime']) > config['laser_timedelta']
-        if ((datetime.now() - config['laser_lasttime']) > config['laser_timedelta']):
-            print('Here')
-            take_laser = True
-        logging.info('take_laser is ' + str(take_laser))
+        logging.info('Time since last laser ' +  str(datetime.now() - config['laser_lasttime']))
+        take_laser = (datetime.now() - config['laser_lasttime']) > config['laser_timedelta']
+        logging.info('Take_laser is ' + str(take_laser))
 
         if take_laser:
             logging.info('Taking laser image')
-            laser_image2 = imageTaker.take_laser_image(
+            laser_image = imageTaker.take_laser_image(
                 config["laser_expose"], skyscanner, lasershutter, config["azi_laser"], config["zen_laser"])
-            logging.info('image' + str(image_count))
             config['laser_lasttime'] = datetime.now()
 
-# Prepare to sleep
 
-# Cool down camera
-# Disconnect components
-# Send data to server??
+        logging.info('Time since last home ' +  str(datetime.now() - last_home_time))
+        if (datetime.now() - last_home_time) > timedelta(hours=1):
+            skyscanner.go_home()
+            last_home_time = datetime.now()
 
-logging.info('Sending SkyScanner home')
+
 skyscanner.go_home()
 
 logging.info('Warming up CCD')

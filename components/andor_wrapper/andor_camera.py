@@ -14,6 +14,7 @@ class AndorCamera:
     def __init__(self):
         re = andorsdk.initialize()
         logging.info("CCD init: " + str(re))
+        logging.info('Initialized CCD')
         print(re)
 
     def getTemperature(self):

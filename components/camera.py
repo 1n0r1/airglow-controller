@@ -9,6 +9,5 @@ from .andor_wrapper.andor_camera import AndorCamera
 
 def getCamera(name):
     if (name == "Andor"):
-        logging.info('Initialized CCD')
         return AndorCamera()
     return None

@@ -248,9 +248,10 @@ class SkyScanner():
         return
 
     def go_home(self):
+        logging.info('Homing Skyscanner')
         self.ser.write('GOSUB5 '.encode())
         sleep(15)
-        logging.info('Homing Skyscanner')
+        logging.info('Homed Skyscanner')
         print("Finished Moving SkyScanner to Home Position")
 
     def get_curr_coords(self):

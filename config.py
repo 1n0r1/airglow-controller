@@ -1,4 +1,3 @@
-# Getting parameters
 from datetime import timedelta
 
 config = {
@@ -13,12 +12,11 @@ config = {
     'sky_offset_az': 0,
     'auto_schedule': 1,
     'temp_setpoint': -70,
-    'bias_expose': 0.1,  # ask prof
-    'dark_expose': 300,  # ask prof
-    'laser_expose': 30,  # ask prof
-    'azi_laser': 90,  # ask prof
-    'zen_laser': 180,  # ask prof
-#    'data_dir': '/home/airglow/airglow/collected-data/',
+    'bias_expose': 0.1,
+    'dark_expose': 300,
+    'laser_expose': 30,
+    'azi_laser': 90,
+    'zen_laser': 180,
     'data_dir': '/mnt/data/',
     'log_dir': '/home/airglow/airglow/logfiles/',
     'laser_timedelta': timedelta(minutes=15),
