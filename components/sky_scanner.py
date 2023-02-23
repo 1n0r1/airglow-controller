@@ -56,7 +56,7 @@ class SkyScanner():
         self.ser.write('GOSUB4 '.encode())
         process_az = self.ser.readline().decode()
         azi1, zeni1 = self.get_curr_coords()
-        while (azi != azi1 and zeni != zeni1):
+        while (azi != azi1 or zeni != zeni1):
             print(azi, azi1, zeni, zeni1)
             azi1, zeni1 = self.get_curr_coords()
             sleep(2)
@@ -66,17 +66,24 @@ class SkyScanner():
 
     def set_pos_real(self, azi_world, zeni_world):
         azi, zeni = self.convert_to_machine_steps(azi_world, zeni_world)
+        print("THIS is where I am moving", azi, zeni)
+        logging.info("SkyScanner moving to azi: %.2f, and zeni: %2f" %(azi_world, zeni_world))
+        logging.info("SkyScanner moving to machine step azi: %.2f, and zeni: %2f" %(azi, zeni))
         self.ser.write(('a=%d ' % azi).encode())
         self.ser.write(('z=%d ' % zeni).encode())
         self.ser.write(('GOSUB4 ').encode())
         process_az = self.ser.readline().decode()
         azi1, zeni1 = self.get_curr_coords()
-        while (azi != azi1 and zeni != zeni1):
+        while (azi != azi1 or zeni != zeni1):
             print(azi, azi1, zeni, zeni1)
             azi1, zeni1 = self.get_curr_coords()
             sleep(2)
             print("Waiting")
-        sleep(3)
+            
+        azi1, zeni1 = self.get_curr_coords()
+        azi_curr, zeni_curr = self.get_world_coords()
+        logging.info("SkyScanner current location azi: %.2f, and zeni: %2f" %(azi_curr, zeni_curr))
+        logging.info("SkyScanner current machine step azi: %.2f, and zeni: %2f" %(azi1, zeni1))
         print("Finished Moving")
 
 
@@ -96,7 +103,7 @@ class SkyScanner():
 
 # set differnce of where it thinks sun is versus where the motors are
 
-# written to config file
+# written to config file -.45
 
     def convert_to_machine_steps(self, azi_world, zeni_world):
         azi = -azi_world - self.azi_offset
@@ -105,6 +112,7 @@ class SkyScanner():
         zeni_machine_step = round((self.max_steps / 360) * zeni)
         azi_machine_step = self.max_steps - (azi_machine_step % self.max_steps)
         zeni_machine_step = zeni_machine_step % self.max_steps
+        print(azi_machine_step, zeni_machine_step)
         return azi_machine_step, zeni_machine_step
 
     def convert_sun_to_machine_steps(self, sun_location_azi, sun_location_zeni):
@@ -129,6 +137,13 @@ class SkyScanner():
     def convert_machine_step_to_degrees(self, machine_step):
         deg = (machine_step / self.max_steps) * (360.0) 
         return deg
+
+    def get_world_coords(self):
+        azi, zeni = self.get_curr_coords()
+        world_az = self.convert_machine_step_to_degrees(azi) - self.azi_offset
+        world_zeni = -self.convert_machine_step_to_degrees(zeni) - self.zeni_offset + 180
+        return world_az, world_zeni
+
 
 
     def jog(self, sun_azi, sun_zeni, incrementAzi, incrementZeni, timeout_time):
@@ -247,10 +262,26 @@ class SkyScanner():
         )    
         return
 
+
+
+    # def get_home_coords(self):
+    #     '''Gets target position of SmartMotor'''
+    #     self.ser.write('RPA '.encode())
+    #     process_az = self.ser.readline().decode()
+    #     print(process_az)
+    #     split_by_command_numbers = process_az.split(' ')
+    #     split_by_hash = split_by_command_numbers[1].split('\r')
+    #     print(split_by_hash)
+    #     # print(split_by_hash)
+    #     ze = int(split_by_hash[0])
+    #     az = int(split_by_hash[1])
+    #     return az, ze
+
     def go_home(self):
         logging.info('Homing Skyscanner')
         self.ser.write('GOSUB5 '.encode())
-        sleep(15)
+        sleep(20)
+        print("Finished Moving")
         logging.info('Homed Skyscanner')
         print("Finished Moving SkyScanner to Home Position")
 

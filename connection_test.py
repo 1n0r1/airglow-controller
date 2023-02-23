@@ -30,9 +30,13 @@ logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
 logging.info('Initializing LaserShutter')
 lasershutter = LaserShutter()
-lasershutter.close_shutter()
-lasershutter.open_shutter()
-lasershutter.close_shutter()
+
+for i in range(10):
+    lasershutter.close_shutter()
+    lasershutter.open_shutter()
+    sleep(10)
+    lasershutter.close_shutter()
+    sleep(10)
 
 
 # logging.info('Initializing SkyScanner')

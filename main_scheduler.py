@@ -41,7 +41,6 @@ powerControl = PowerControl()
 powerControl.turnOn(config['AndorPowerPort'])
 powerControl.turnOn(config['SkyScannerPowerPort'])
 powerControl.turnOn(config['LaserPowerPort'])
-# powerControl.turnOn(config['LaserShutterPowerPort'])
 
 
 logging.info('Waiting until Housekeeping time: ' +
@@ -49,10 +48,7 @@ logging.info('Waiting until Housekeeping time: ' +
 timeHelper.waitUntilHousekeeping()
 
 
-# housekeeping operations
-
 # Housekeeping
-# JJM NOTE, THESE LOG ENTRIES WOULD PROBABLY BETTER LIVE INSIDE THE FUNCTIONS.
 logging.info('Initializing LaserShutter')
 lasershutter = LaserShutter()
 logging.info('Initializing SkyScanner')
@@ -89,7 +85,6 @@ data_folder_name = config['data_dir'] + sunset.strftime('%Y%m%d')
 logging.info('Creating data directory: ' + data_folder_name)
 isExist = os.path.exists(data_folder_name)
 if not isExist:
-    # Create a new directory
     os.makedirs(data_folder_name)
 
 # JJM the (2,2) at the end is XBin and YBin. These need to be parameters sent in from the config file and also needs to
@@ -131,6 +126,8 @@ while (datetime.now() <= sunrise):
             observation['skyScannerLocation'][0], observation['skyScannerLocation'][1]))
         skyscanner.set_pos_real(
             observation["skyScannerLocation"][0], observation['skyScannerLocation'][1])
+        world_az, world_zeni = skyscanner.get_world_coords()
+        logging.info("The Sky Scanner has moved to azi: %.2f, and zeni: %2f" %(world_az, world_zeni))
         logging.info('Taking sky exposure')
 
         if (observation['lastIntensity'] == 0 or observation['lastExpTime'] == 0):
@@ -146,9 +143,8 @@ while (datetime.now() <= sunrise):
         new_image = imageTaker.take_normal_image(observation['imageTag'],
                                                  observation['exposureTime'],
                                                  observation['skyScannerLocation'][0],
-                                                 observation['skyScannerLocation'][1])
+                                                 observation['skyScannerLocation'][1], skyscanner)
 
-        # TODO: Will need to put into config
         image_sub = scipy.signal.convolve2d(
             new_image[config['i1']:config['i2'], config['j1']:config['j2']], numpy.ones((config['N'], config['N']))/config['N']**2, mode='valid')
         image_intensity = (numpy.percentile(image_sub, 75) - numpy.percentile(
@@ -163,8 +159,9 @@ while (datetime.now() <= sunrise):
         logging.info('Time since last laser ' +  str(datetime.now() - config['laser_lasttime']))
         take_laser = (datetime.now() - config['laser_lasttime']) > config['laser_timedelta']
         logging.info('Take_laser is ' + str(take_laser))
-
         if take_laser:
+            world_az, world_zeni = skyscanner.get_world_coords()
+            logging.info("The Sky Scanner is pointed at laser position of azi: %.2f and zeni %.2f" %(world_az, world_zeni))
             logging.info('Taking laser image')
             laser_image = imageTaker.take_laser_image(
                 config["laser_expose"], skyscanner, lasershutter, config["azi_laser"], config["zen_laser"])
@@ -172,7 +169,7 @@ while (datetime.now() <= sunrise):
 
 
         logging.info('Time since last home ' +  str(datetime.now() - last_home_time))
-        if (datetime.now() - last_home_time) > timedelta(hours=1):
+        if (datetime.now() - last_home_time) > timedelta(hours=2):
             skyscanner.go_home()
             last_home_time = datetime.now()
 
@@ -188,9 +185,9 @@ while (camera.getTemperature() < -20):
 logging.info('Shutting down CCD')
 camera.shutDown()
 
+powerControl = PowerControl()
 powerControl.turnOff(config['AndorPowerPort'])
 powerControl.turnOff(config['SkyScannerPowerPort'])
 powerControl.turnOff(config['LaserPowerPort'])
-# powerControl.turnOff(config['LaserShutterPowerPort'])
 
 logging.info('Executed flawlessly, exitting')

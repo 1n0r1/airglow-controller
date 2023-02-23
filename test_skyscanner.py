@@ -24,13 +24,13 @@ from components.powercontrol import PowerControl
 
 
 powerControl = PowerControl()
-powerControl.turnOn(config['SkyScannerPowerPort'])
-print("turned on SkyScanner")
+# powerControl.turnOn(config['SkyScannerPowerPort'])
+# print("turned on SkyScanner")
 skyscanner = SkyScanner(skyscan_config['max_steps'], skyscan_config['azi_offset'], skyscan_config['zeni_offset'], skyscan_config['azi_world'], skyscan_config['zeni_world'], skyscan_config['number_of_steps'], skyscan_config['port_location'])
 
-skyscanner.go_home()
+# skyscanner.go_home()
 print("finished going home")
-skyscanner.jog(30,30,.3,.3,50)
-powerControl.turnOff(config['SkyScannerPowerPort'])
+# skyscanner.jog(30,30,.3,.3,50)
+# powerControl.turnOff(config['SkyScannerPowerPort'])
 
 

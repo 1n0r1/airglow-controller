@@ -91,7 +91,7 @@ class Image_Helper:
         logging.info('Initial bias image taken')
         return nparr
 
-    def take_normal_image(self, image_tag, exposure, az, ze):
+    def take_normal_image(self, image_tag, exposure, az, ze, skyscanner):
         # keeps shutter open by default
         self.camera.setShutter()
         self.camera.setExposureTime(exposure)
@@ -101,7 +101,8 @@ class Image_Helper:
         while (self.camera.getStatus() == "DRV_ACQUIRING"):
             sleep(2)
         nparr = self.camera.getImage()
-        self.save_image(image_tag, nparr, exposure, az, ze, startTime)
+        azreal, zereal = skyscanner.get_world_coords()
+        self.save_image(image_tag, nparr, exposure, azreal, zereal, startTime)
         return nparr
 
     # function for laser image
@@ -119,5 +120,7 @@ class Image_Helper:
             sleep(2)
         nparr = self.camera.getImage()
         lasershutter.close_shutter()
-        self.save_image("L", nparr, exposure, az, zen, startTime)
+
+        azreal, zereal = skyscanner.get_world_coords()
+        self.save_image("L", nparr, exposure, azreal, zereal, startTime)
         return nparr
