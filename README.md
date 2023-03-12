@@ -9,7 +9,7 @@ Install Ubuntu 22.04 with erase disk and wipe out old operating system (Windows)
 Log out and test RDP
 
 ## Setup SSH
-
+`sudo apt install openssh-server`
 
 
 # Installing Andor SDK
