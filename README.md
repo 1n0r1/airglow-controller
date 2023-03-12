@@ -48,6 +48,8 @@ After successful installation of Andor SDK, `libandor.so` should appear in `/usr
 
 Clone this repo into home dir `~/airglow/airglow-controller`
 
+`pip3 install -r requirements.txt`
+
 ## Cython for SDK
 
 cd into `components/andor_wrapper/andorsdk_wrapper` and `python3 setup.py build_ext -i` to build the python module
