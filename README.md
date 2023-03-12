@@ -41,7 +41,10 @@ After successful installation of Andor SDK, `libandor.so` should appear in `/usr
 
 # Python
 `sudo apt-get update`
+
 `sudo apt-get install python3.6`
+
+`sudo apt-get install python3-pip`
 
 ## Cython for SDK
 
