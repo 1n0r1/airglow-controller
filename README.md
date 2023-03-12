@@ -5,11 +5,15 @@ Install Ubuntu 22.04 with erase disk and wipe out old operating system (Windows)
 ## Setup RDP
 
 `sudo apt install xrdp`
-
+check status:
+`sudo systemctl status xrdp`
+If it is not running you might need to turn off Ubuntu's native RDP (which is less convenient than xrdp)
 Log out and test RDP
 
 ## Setup SSH
 `sudo apt install openssh-server`
+check status:
+`sudo systemctl status ssh`
 
 
 # Installing Andor SDK
