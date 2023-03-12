@@ -28,19 +28,18 @@ logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 # powerControl.turnOn(config['SkyScannerPowerPort'])
 # powerControl.turnOn(config['LaserPowerPort'])
 
-logging.info('Initializing LaserShutter')
-lasershutter = LaserShutter()
+# logging.info('Initializing LaserShutter')
+# lasershutter = LaserShutter()
 
-for i in range(10):
-    lasershutter.close_shutter()
-    lasershutter.open_shutter()
-    sleep(10)
-    lasershutter.close_shutter()
-    sleep(10)
+# lasershutter.close_shutter()
+# lasershutter.open_shutter()
+# sleep(5)
+# lasershutter.close_shutter()
+# sleep(5)
 
 
-# logging.info('Initializing SkyScanner')
-# skyscanner = SkyScanner(skyscan_config['max_steps'], skyscan_config['azi_offset'], skyscan_config['zeni_offset'], skyscan_config['azi_world'], skyscan_config['zeni_world'], skyscan_config['number_of_steps'], skyscan_config['port_location'])
+logging.info('Initializing SkyScanner')
+skyscanner = SkyScanner(skyscan_config['max_steps'], skyscan_config['azi_offset'], skyscan_config['zeni_offset'], skyscan_config['azi_world'], skyscan_config['zeni_world'], skyscan_config['number_of_steps'], skyscan_config['port_location'])
 # logging.info('Sending SkyScanner home')
 # skyscanner.go_home()
 # logging.info(skyscanner.get_curr_coords())

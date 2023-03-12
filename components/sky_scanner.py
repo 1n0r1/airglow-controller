@@ -56,11 +56,15 @@ class SkyScanner():
         self.ser.write('GOSUB4 '.encode())
         process_az = self.ser.readline().decode()
         azi1, zeni1 = self.get_curr_coords()
+        print("Moving Skyscanner to Azi Machine Step: ", azi, " Zeni Machine Step: ", zeni)
         while (azi != azi1 or zeni != zeni1):
-            print(azi, azi1, zeni, zeni1)
+            # print(azi, azi1, zeni, zeni1)
+            print("Current Azi Pos:", azi1, " ||||  Target Azi Pos:", azi)
+            print("Current Zeni Pos:", zeni1, " ||||  Target Zeni Pos", zeni)
+
             azi1, zeni1 = self.get_curr_coords()
             sleep(2)
-            print("Waiting")
+            print("\n")
         sleep(3)
         print("Finished Moving")
 
@@ -156,18 +160,21 @@ class SkyScanner():
         self.set_pos(machine_sun_azi, machine_sun_zeni)
         while (True):
             curr_az, curr_zen = self.get_curr_coords()
-            print(curr_az, curr_zen, machine_sun_azi, machine_sun_zeni)
+            azi_world_coords, zeni_world_coords = self.get_world_coords()
+            print( "\nCurrent Azi Machine Step: ", curr_az, "   Current Azi Degrees (Including Previous Offset):", azi_world_coords)
+            print("Current Zeni Machine Step: ", curr_zen, "   Current Zeni Degrees (Including Previous Offset): ", zeni_world_coords)
             if (curr_az == machine_sun_azi and machine_sun_zeni == curr_zen):
                 break
         curr_az, curr_zen = self.get_curr_coords()
         print(
-            "\n \n Finished moving to the sun's location - azi coord: %s"  %curr_az  + " zeni coord: %s. \n Use the arrow keys to move the position of the Sky Scanner (azi is left/right. Zeni is up/down). \n Press s to save current offset coords to config. \n Press q to exit out of jog." %curr_zen)
+            "\nFinished moving to the sun's location - azi coord: %s"  %curr_az  + " zeni coord: %s. \n Use the arrow keys to move the position of the Sky Scanner (azi is left/right. Zeni is up/down). \n Press s to save current offset coords to config. \n Press q to exit out of jog." %curr_zen)
         
 
         def press(key):
             nonlocal sun_azi_offset
             nonlocal sun_zeni_offset
             while True:
+                print("Use Arrow Keys To Move")
                 isTimeoutSucceeded = True
                 curr_az, curr_zen = self.get_curr_coords()
                 if key == 'q':
@@ -181,7 +188,7 @@ class SkyScanner():
                     timeout_start = time.time()
                     while (time.time() < timeout_start + timeout):
                         curr_az1, curr_zen1 = self.get_curr_coords()
-                        print(curr_az, curr_az1)
+                        # print(curr_az, curr_az1)
                         if (curr_az - incrementMachineStepsAzi == curr_az1):
                             isTimeoutSucceeded = False
                             print("Jogged to %f degrees azi" %self.convert_machine_step_to_degrees(curr_az1))
@@ -217,7 +224,7 @@ class SkyScanner():
                     timeout_start = time.time()
                     while (time.time() < timeout_start + timeout):
                         curr_az1, curr_zen1 = self.get_curr_coords()
-                        print(curr_zen, curr_zen1)
+                        # print(curr_zen, curr_zen1)
                         if (curr_zen - incrementMachineStepsZeni == curr_zen1):
                             isTimeoutSucceeded = False
                             print("Jogged to %f degrees zeni" %self.convert_machine_step_to_degrees(curr_zen1))
@@ -235,7 +242,7 @@ class SkyScanner():
                     timeout_start = time.time()
                     while (time.time() < timeout_start + timeout):
                         curr_az1, curr_zen1 = self.get_curr_coords()
-                        print(curr_zen, curr_zen1)
+                        # print(curr_zen, curr_zen1)
                         if (curr_zen + incrementMachineStepsZeni == curr_zen1):
                             isTimeoutSucceeded = False
                             print("Jogged to %f degrees zeni" %self.convert_machine_step_to_degrees(curr_zen1))
@@ -289,9 +296,10 @@ class SkyScanner():
         '''Gets target position of SmartMotor'''
         self.ser.write('RPA '.encode())
         process_az = self.ser.readline().decode()
+        print(process_az)
         split_by_command_numbers = process_az.split(' ')
         split_by_hash = split_by_command_numbers[1].split('\r')
-        # print(split_by_hash)
+        print(split_by_hash)
         ze = int(split_by_hash[0])
         az = int(split_by_hash[1])
         return az, ze

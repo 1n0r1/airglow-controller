@@ -107,7 +107,6 @@ else:
         config['laser_lasttime'] = datetime.now()
 
 
-last_home_time = datetime.now()
 while (datetime.now() <= sunrise):
     for observation in observations:
         if (datetime.now() >= sunrise):
@@ -167,11 +166,6 @@ while (datetime.now() <= sunrise):
                 config["laser_expose"], skyscanner, lasershutter, config["azi_laser"], config["zen_laser"])
             config['laser_lasttime'] = datetime.now()
 
-
-        logging.info('Time since last home ' +  str(datetime.now() - last_home_time))
-        if (datetime.now() - last_home_time) > timedelta(hours=2):
-            skyscanner.go_home()
-            last_home_time = datetime.now()
 
 
 skyscanner.go_home()

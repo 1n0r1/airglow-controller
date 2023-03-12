@@ -21,6 +21,8 @@ class SkyAlert():
         if len(arr) == 0:
             arr = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
             logging.error('Cannot communicate with SkyAlert')
+        while len(arr) < 9:
+            arr.append(0)
         return arr
 
     def getAmbientTemperature(self) -> float:
