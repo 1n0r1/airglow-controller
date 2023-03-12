@@ -50,6 +50,6 @@ Clone this repo into home dir `~/airglow/airglow-controller`
 
 ## Cython for SDK
 
-cd into `components/andorsdk_wrapper/` and `python3 setup.py build_ext -i` to build the python module
+cd into `components/andor_wrapper/andorsdk_wrapper` and `python3 setup.py build_ext -i` to build the python module
 
 Now you can import to python `components/andorsdk_wrapper/andorsdk`
