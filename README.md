@@ -1,6 +1,14 @@
 # Setup Odyssey
 
-Install Ubuntu 22.04
+Install Ubuntu 22.04 with erase disk and wipe out old operating system (Windows)
+
+## Setup RDP
+
+`sudo apt install xrdp`
+
+Log out and test RDP
+
+## Setup SSH
 
 
 
