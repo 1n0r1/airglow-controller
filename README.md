@@ -1,12 +1,10 @@
-# Getting started
-
-## Setup Odyssey
+# Setup Odyssey
 
 Install Ubuntu 22.04
 
 
 
-## Installing Andor SDK
+# Installing Andor SDK
 
 Download Andor SDK2.104.30064.0
 
