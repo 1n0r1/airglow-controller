@@ -2,6 +2,7 @@
 
 Install Ubuntu 22.04 with erase disk and wipe out old operating system (Windows)
 
+Also set Restore on AC/Power Loss to Power On in the BIOS
 ## Setup RDP
 
 `sudo apt install xrdp`
