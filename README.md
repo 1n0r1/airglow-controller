@@ -32,6 +32,10 @@ Enable SSH in Configuration
 
 `sudo apt install xrdp`
 
+`sudo adduser airglowrdp`
+
+RDP to RPi need to be from a different user `airglowrdp` and not the default one `airglow`
+
 # Installing Andor SDK
 
 Download Andor SDK2.104.30064.0
