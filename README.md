@@ -26,6 +26,9 @@ check status:
 # Setup for Raspberry Pi
 Install Raspberry Pi OS 32-bit
 
+Switch from DHCPCD to NetworkManager
+
+
 
 
 # Installing Andor SDK
