@@ -30,6 +30,7 @@ Switch from DHCPCD to NetworkManager
 
 Enable SSH in Configuration
 
+`sudo apt install xrdp`
 
 # Installing Andor SDK
 
