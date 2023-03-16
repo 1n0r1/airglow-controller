@@ -23,6 +23,11 @@ check status:
 `sudo systemctl status ssh`
 
 
+# Setup for Raspberry Pi
+Install Raspberry Pi OS 32-bit
+
+
+
 # Installing Andor SDK
 
 Download Andor SDK2.104.30064.0
