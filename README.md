@@ -28,7 +28,7 @@ Install Raspberry Pi OS 32-bit
 
 Switch from DHCPCD to NetworkManager
 
-
+Enable SSH in Configuration
 
 
 # Installing Andor SDK
