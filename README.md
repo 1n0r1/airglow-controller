@@ -28,7 +28,7 @@ Install Raspberry Pi OS 32-bit
 
 Switch from DHCPCD to NetworkManager
 
-Enable SSH in Configuration
+Enable SSH and Serial Port in Configuration
 
 `sudo apt install xrdp`
 
