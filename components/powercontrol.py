@@ -5,7 +5,7 @@ import logging
 
 class PowerControl:
     def __init__(self, hostname="192.168.1.100", userid="admin", password="ionosphere") -> None:
-        self.switch = dlipower.PowerSwitch(hostname=hostname, userid=userid, password=password)
+        self.switch = dlipower.PowerSwitch(hostname=hostname, userid=userid, password=password, timeout=60, retries=5)
         if not self.switch.verify():
             logging.error("Can't talk to the switch")
         logging.info("Connected to power switch")

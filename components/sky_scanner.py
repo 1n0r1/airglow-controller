@@ -35,6 +35,7 @@ class SkyScanner():
         self.port_location = Port
         try:
             self._openSerial()
+            logging.info('Initialized SkyScanner')
         except:
             print("Can't open serial port")
 

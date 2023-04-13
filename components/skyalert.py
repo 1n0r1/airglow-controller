@@ -3,8 +3,17 @@ from time import sleep
 import logging
 from requests.adapters import HTTPAdapter, Retry
 
+# Ambient temp 
+# Sky Temperature 
+# Dampness
+# Darkness
+# Humidity (absolute percentage)
+# Wind Speed
+# Power check (Boolean)
+# Barometric Pressure (hPa * 100)
+
 class SkyAlert():
-    def __init__(self, address='http://192.168.1.2:81') -> None:
+    def __init__(self, address) -> None:
         self.address = address
 
     def getList(self):
@@ -65,6 +74,6 @@ class SkyAlert():
         return float(x[7])
 
     def getPressure(self) -> float:
-        # Unit: 10^x Pa
+        # Unit: 10^2 Pa
         x = self.getList()
         return float(x[8])

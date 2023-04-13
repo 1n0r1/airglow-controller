@@ -21,7 +21,7 @@ ser = serial.Serial(
     parity=serial.PARITY_NONE,
     stopbits=serial.STOPBITS_ONE,
     bytesize=serial.EIGHTBITS,
-    timeout=300 #log every 5 min
+    timeout=60 #log every 1 min
 )
 
 logging.info('USB communication normal')
@@ -35,7 +35,7 @@ while 1:
         kit.stepper1.release()
         for i in range(7):
             kit.stepper1.onestep(style=stepper.DOUBLE)
-            time.sleep(0.05)
+            time.sleep(0.2)
         logging.info('Opened')
         ser.write("opened\n".encode())
     if req == "close\n":

@@ -21,10 +21,17 @@ config = {
     'log_dir': '/home/airglow/airglow/logfiles/',
     'laser_timedelta': timedelta(minutes=15),
     'laser_lasttime': None,
-
-
     'maxExposureTime': 600,
     'moonThresholdAngle': 37,
+
+    # Camera setting
+    'hbin': 2,
+    'vbin': 2,
+
+    'skyAlertAddress': 'http://192.168.1.2:81',
+    'powerSwitchAddress': '192.168.1.100',
+    'powerSwitchUser': 'admin',
+    'powerSwitchPassword': 'ionosphere',
 
     # scipy.signal.convolve2d
     'i1': 150,

@@ -6,3 +6,6 @@ errorcodestable.c
 errorcodestable.cpython*
 *.png
 __pycache__
+
+gmailcredential.json
+token.pickle
