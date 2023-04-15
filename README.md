@@ -14,6 +14,8 @@ check status:
 If it is not running you might need to turn off Ubuntu's native RDP (which is less convenient than xrdp).
 Log out and test RDP
 
+`apt install libhidapi-hidraw0`
+
 ## Setup SSH
 
 `sudo apt install openssh-server`
