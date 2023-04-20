@@ -24,6 +24,9 @@ check status:
 
 `sudo systemctl status ssh`
 
+## Add user to dialout group
+
+`sudo adduser airglow dialout`
 
 # Setup for Raspberry Pi
 Install Raspberry Pi OS 32-bit
