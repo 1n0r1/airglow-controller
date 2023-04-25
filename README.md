@@ -45,7 +45,7 @@ Run `sudo lsblk -o name,mountpoint,size,type,ro,label,uuid` to check the name of
 
 `sudo mkdir /mnt/data` to create a directory to mount the drive to
 
-`sudo mount /dev/nvme0n1p2 /mnt/data` to mount the drive
+`sudo mount /dev/nvme0n1p2 /mnt/data` to mount the drive, replace with correct name
 
 Add to `/etc/fstab` this line so it is mounted at startup, replace with actual UUID
 
