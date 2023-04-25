@@ -90,9 +90,7 @@ Now you can import to python `components/andorsdk_wrapper/andorsdk`
 
 Use lsusb to view the vendorId and productId of the connected laser shutter, vendorId:productId, for example 0461:0030. Write in config file as 0x0461 and 0x0030.
 
-Hid might not have the neccessary permission, this might have to be run everytime the shutter is disconnected or restarted:
-
-`sudo chmod 0666 /dev/hidraw0`
+Remember to set the udev rule for laser shutter (written above)
 
 ## Connection test
 
