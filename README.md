@@ -39,18 +39,6 @@ Then reboot
 
 `ls -l /dev/` to verify the permission for hidraw0, it should be `crw-rw-rw-`
 
-## Mounting SSD
-
-Run `sudo lsblk -o name,mountpoint,size,type,ro,label,uuid` to check the name of the drive, for example `nvme0n1p2`
-
-`sudo mkdir /mnt/data` to create a directory to mount the drive to
-
-`sudo mount /dev/nvme0n1p2 /mnt/data` to mount the drive, replace with correct name
-
-Add to `/etc/fstab` this line so it is mounted at startup, replace with actual UUID
-
-`UUID=e1eab4ba-5cd3-4b6b-9869-27c5fef56a62 /mnt/data ext4 defaults 0 0`
-
 
 # Setup for Raspberry Pi
 Install Raspberry Pi OS 32-bit
