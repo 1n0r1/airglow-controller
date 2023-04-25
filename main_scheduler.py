@@ -13,22 +13,10 @@ from schedule import observations
 
 import utilities.time_helper
 from utilities.image_taker import Image_Helper
-
-from googleapiclient.discovery import build
-from google_auth_oauthlib.flow import InstalledAppFlow
-from google.auth.transport.requests import Request
-# for encoding/decoding messages in base64
-from base64 import urlsafe_b64decode, urlsafe_b64encode
-# for dealing with attachement MIME types
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
-from email.mime.image import MIMEImage
-from email.mime.audio import MIMEAudio
-from email.mime.base import MIMEBase
-from mimetypes import guess_type as guess_mime_type
+from utilities.send_mail import SendMail
 
 from components.camera import getCamera
-from components.lasershutter.shutter import LaserShutter
+from components.shutterhid import HIDLaserShutter
 from components.sky_scanner import SkyScanner
 from components.skyalert import SkyAlert
 from components.powercontrol import PowerControl
@@ -62,7 +50,7 @@ try:
 
 
     # Housekeeping
-    lasershutter = LaserShutter()
+    lasershutter = HIDLaserShutter(config['vendorId'], config['productId'])
     skyscanner = SkyScanner(skyscan_config['max_steps'], skyscan_config['azi_offset'], skyscan_config['zeni_offset'], skyscan_config['azi_world'], skyscan_config['zeni_world'], skyscan_config['number_of_steps'], skyscan_config['port_location'])
     camera = getCamera("Andor")
 
@@ -198,52 +186,9 @@ try:
 except Exception as e:
     logging.error(e)
 
-    receiver_emails = [
-        "khanhn2@illinois.edu",
-        "jmakela@illinois.edu"
-    ]
-
-    email = "airglowuaotest@gmail.com"
-    picklecred = "/home/airglow/airglow/airglow-controller/token.pickle"
-    gmailcred = "/home/airglow/airglow/airglow-controller/gmailcredential.json"
-
-    def gmail_authenticate():
-        creds = None
-        if os.path.exists(picklecred):
-            with open(picklecred, "rb") as token:
-                creds = pickle.load(token)
-        if not creds or not creds.valid:
-            if creds and creds.expired and creds.refresh_token:
-                creds.refresh(Request())
-            else:
-                flow = InstalledAppFlow.from_client_secrets_file(gmailcred, SCOPES)
-                creds = flow.run_local_server(port=0)
-            with open(picklecred, "wb") as token:
-                pickle.dump(creds, token)
-        return build('gmail', 'v1', credentials=creds)
-
-    def build_message(destination, obj, body):
-        message = MIMEText(body)
-        message['to'] = destination
-        message['from'] = email
-        message['subject'] = obj
-        return {'raw': urlsafe_b64encode(message.as_bytes()).decode()}
-
-    def send_message(service, destination, obj, body):
-        return service.users().messages().send(
-            userId="me",
-            body=build_message(destination, obj, body)
-        ).execute()
-
+    sm = SendMail(config['email'], config['pickleCred'], config['gmailCred'] config['site'])
+    
     print("sending mail")
-    subject = "Airglow UAO Error"
-    message = """
-This message is sent from UAO FPI site. The program encountered the following error:\
+    sm.send_error(config['receiverEmails'], e)
 
-        """
-    message = message + str(e)
-
-    SCOPES = ['https://mail.google.com/']
-    service = gmail_authenticate()
-    for destination in receiver_emails:
-        send_message(service, destination, subject, message)
+    

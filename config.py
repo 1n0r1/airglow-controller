@@ -45,7 +45,20 @@ config = {
     'AndorPowerPort': 2,
     'SkyScannerPowerPort': 4,
     'LaserPowerPort': 5,
-    'LaserShutterPowerPort': 8
+    'LaserShutterPowerPort': 8,
+
+    # Laser shutter
+    'vendorId': 0x0461,
+    'productId': 0x0030,
+
+    # Gmaii
+    'pickleCred': "/home/airglow/airglow/airglow-controller/token.pickle",
+    'gmailCred': "/home/airglow/airglow/airglow-controller/gmailcredential.json",
+    'email': "airglowuaotest@gmail.com",
+    'receiverEmails': [
+        "khanhn2@illinois.edu",
+        "jmakela@illinois.edu"
+    ]
 }
 
 skyscan_config = {

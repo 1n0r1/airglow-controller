@@ -3,6 +3,7 @@
 Install Ubuntu 22.04 with erase disk and wipe out old operating system (Windows)
 
 Also set Restore on AC/Power Loss to Power On in the BIOS
+
 ## Setup RDP
 
 `sudo apt install xrdp`
@@ -74,3 +75,27 @@ Clone this repo into home dir `~/airglow/airglow-controller`
 cd into `components/andor_wrapper/andorsdk_wrapper` and `python3 setup.py build_ext -i` to build the python module
 
 Now you can import to python `components/andorsdk_wrapper/andorsdk`
+
+## Laser Shutter
+
+Use lsusb to view the vendorId and productId of the connected laser shutter, vendorId:productId, for example 0461:0030. Write in config file as 0x0461 and 0x0030.
+
+Hid might not have the neccessary permission, this might have to be run everytime the shutter is disconnected or restarted:
+
+`sudo chmod 0666 /dev/hidraw0`
+
+## Connection test
+
+`python3 connection_test.py` to test all the components
+
+## Gmail setup (optional)
+
+Unneccessarily hard to setup for some reason. Could look into replacing it with other less complex alternative
+
+If you want to use a different gmail account or don't have a working `gmailcredential.json` file, follows https://www.thepythoncode.com/article/use-gmail-api-in-python to Enable Gmail API. Then download `gmailcredential.json` file and specify the path in config['gmailCred'].
+
+Run connection_test.py to check if gmail works, go to the verification link if neccessary. 
+
+airglowuaotest@gmail.com
+
+airglow123;

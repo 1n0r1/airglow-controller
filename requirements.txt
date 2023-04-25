@@ -5,3 +5,11 @@ numpy
 pythonnet
 zugbruecke
 scipy
+hidapi
+google-api-python-client
+google-auth-httplib2
+google-auth-oauthlib
+h5py
+keyboard
+sshkeyboard
+dlipower
