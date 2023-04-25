@@ -29,6 +29,16 @@ check status:
 
 `sudo adduser airglow dialout`
 
+## Udev rule for USB Shutter
+
+`sudo nano /etc/udev/rules.d/99-laser-shutter.rules`
+
+Then write the following into the file `KERNEL=="hidraw*", SUBSYSTEM=="hidraw", MODE="0666"`
+
+Then reboot
+
+`ls -l /dev/` to verify the permission for hidraw0, it should be `crw-rw-rw-`
+
 # Setup for Raspberry Pi
 Install Raspberry Pi OS 32-bit
 
