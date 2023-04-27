@@ -103,6 +103,10 @@ Remember to set the udev rule for laser shutter (written above)
 
 `python3 connection_test.py` to test all the components
 
+# Set crontab
+
+
+
 ## Gmail setup (optional)
 
 Unneccessarily hard to setup for some reason. Could look into replacing it with other less complex alternative
