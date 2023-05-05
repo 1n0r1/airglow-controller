@@ -31,6 +31,8 @@ check status:
 
 ## Udev rule for USB Shutter
 
+`sudo apt install libhidapi-hidraw0`
+
 `sudo nano /etc/udev/rules.d/99-laser-shutter.rules`
 
 Then write the following into the file `KERNEL=="hidraw*", SUBSYSTEM=="hidraw", MODE="0666"`

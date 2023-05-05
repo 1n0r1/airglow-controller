@@ -35,7 +35,7 @@ lasershutter.close_shutter()
 lasershutter.open_shutter()
 sleep(5)
 lasershutter.close_shutter()
-sleep(1)
+sleep(5)
 
 
 logging.info('Initializing SkyScanner')
@@ -54,7 +54,7 @@ powerControl.turnOff(config['AndorPowerPort'])
 powerControl.turnOff(config['SkyScannerPowerPort'])
 powerControl.turnOff(config['LaserPowerPort'])
 
-sm = SendMail(config['email'], config['pickleCred'], config['gmailCred'], config['site'])
+# sm = SendMail(config['email'], config['pickleCred'], config['gmailCred'], config['site'])
 
-print("sending mail")
-sm.send_error(["khanhn2@illinois.edu"], "Test connection")
+# print("sending mail")
+# sm.send_error(["khanhn2@illinois.edu"], "Test connection")

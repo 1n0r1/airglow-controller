@@ -5,7 +5,7 @@ numpy
 pythonnet
 zugbruecke
 scipy
-hidapi
+hid
 google-api-python-client
 google-auth-httplib2
 google-auth-oauthlib

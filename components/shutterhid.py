@@ -10,6 +10,7 @@ class HIDLaserShutter():
     def __init__(self, vendorId=0x0461, productId=0x0030):
         self.vid = vendorId
         self.pid = productId
+
         with hid.Device(self.vid, self.pid) as h:
             logging.info(f'Laser Shutter Initilized')
             logging.info(f'Device manufacturer: {h.manufacturer}')
