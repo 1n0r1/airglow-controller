@@ -186,7 +186,7 @@ try:
 except Exception as e:
     logging.error(e)
 
-    sm = SendMail(config['email'], config['pickleCred'], config['gmailCred'] config['site'])
+    sm = SendMail(config['email'], config['pickleCred'], config['gmailCred'], config['site'])
     
     print("sending mail")
     sm.send_error(config['receiverEmails'], e)
