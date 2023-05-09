@@ -20,6 +20,7 @@ from components.shutterhid import HIDLaserShutter
 from components.sky_scanner import SkyScanner
 from components.skyalert import SkyAlert
 from components.powercontrol import PowerControl
+from components.filterwheel import FilterWheel
 
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
@@ -37,15 +38,17 @@ logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 # lasershutter.close_shutter()
 # sleep(5)
 
+# fw = FilterWheel('/dev/ttyUSB0')
+# fw.home()
 
 # logging.info('Initializing SkyScanner')
 # skyscanner = SkyScanner(skyscan_config['max_steps'], skyscan_config['azi_offset'], skyscan_config['zeni_offset'], skyscan_config['azi_world'], skyscan_config['zeni_world'], skyscan_config['number_of_steps'], skyscan_config['port_location'])
 # logging.info('Sending SkyScanner home')
 # skyscanner.go_home()
 
-# logging.info('Initializing CCD')
-# camera = getCamera("Andor")
-# camera.shutDown()
+logging.info('Initializing CCD')
+camera = getCamera("Andor")
+camera.shutDown()
 
 # sa = SkyAlert(config['skyAlertAddress'])
 # logging.info(sa.getList())
