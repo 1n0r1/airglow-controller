@@ -48,6 +48,7 @@ logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
 logging.info('Initializing CCD')
 camera = getCamera("Andor")
+print(camera.getTemperature())
 camera.shutDown()
 
 # sa = SkyAlert(config['skyAlertAddress'])
