@@ -1,6 +1,7 @@
 # Andor Camera
 
-Example code on how to use the camera
+Example code on how to use the camera. Run the script from the main directory of this repo for import components.camera to work, else you might need to change
+the import path.
 
 ```
   from components.camera import getCamera
