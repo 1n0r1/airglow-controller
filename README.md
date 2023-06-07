@@ -81,7 +81,7 @@ After successful installation of Andor SDK, `libandor.so` should appear in `/usr
 # Python
 `sudo apt-get update`
 
-`sudo apt-get install python3.6`
+Install Python 3.10.6
 
 `sudo apt-get install python3-pip`
 
