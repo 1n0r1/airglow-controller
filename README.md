@@ -1,3 +1,8 @@
+# Tested on
+Ubuntu 22.04
+
+Python 3.10.6
+
 # Initial setup for Odyssey
 
 Install Ubuntu 22.04 with erase disk and wipe out old operating system (Windows)
