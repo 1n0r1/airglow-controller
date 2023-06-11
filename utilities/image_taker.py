@@ -16,6 +16,7 @@ class Image_Helper:
     YBinning = None
     def __init__(self, folderName, camera, site, latitude, longitude, instrument, xbin, ybin, skyAlert) -> None:
         self.counter = {  # JJM: NEED TO FIND A WAY TO SELF-INITIALIZE THESE IN CASE WE DEFINE A NEW TYPE
+            "XG": 0,
             "XR": 0,
             "D": 0,
             "L": 0,
@@ -107,9 +108,10 @@ class Image_Helper:
 
     # function for laser image
 
-    def take_laser_image(self, exposure, skyscanner, lasershutter, az, zen):
+    def take_laser_image(self, exposure, skyscanner, lasershutter, az, zen, fw, fw_laser):
         skyscanner.set_pos_real(az, zen)
         # move filterwheel
+        fw.move(fw_laser)
         lasershutter.open_shutter()
         self.camera.setShutter()
         self.camera.setExposureTime(exposure)

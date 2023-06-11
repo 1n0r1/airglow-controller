@@ -1,12 +1,12 @@
 from datetime import timedelta
 
 config = {
-    'site': 'LOW',
-    'latitude': '34.752',
-    'longitude': '-111.423',
-    'elevation': 2308.0,
+    'site': 'UAO',
+    'latitude': '40.1106',
+    'longitude': '-88.2073',
+    'elevation': 222,
     'horizon': '-8.0',
-    'instr_name': 'minime11',
+    'instr_name': 'minime05',
     'startHousekeeping': 20,
     'sky_offset_el': 0,
     'sky_offset_az': 0,
@@ -15,9 +15,9 @@ config = {
     'bias_expose': 0.1,
     'dark_expose': 300,
     'laser_expose': 30,
-    'azi_laser': -57.2,
-    'zen_laser': -180.0,
-    'data_dir': '/home/airglow/airglow/data/',
+    'azi_laser': 90,
+    'zen_laser': 180,
+    'data_dir': '/mnt/data/',
     'log_dir': '/home/airglow/airglow/logfiles/',
     'laser_timedelta': timedelta(minutes=15),
     'laser_lasttime': None,
@@ -28,7 +28,7 @@ config = {
     'hbin': 2,
     'vbin': 2,
 
-    'skyAlertAddress': 'http://192.168.1.126:81',
+    'skyAlertAddress': 'http://192.168.1.2:81',
     'powerSwitchAddress': '192.168.1.100',
     'powerSwitchUser': 'admin',
     'powerSwitchPassword': 'ionosphere',
@@ -42,15 +42,10 @@ config = {
 
 
     # Power Ports
-    'AndorPowerPort': 3,
-    'SkyScannerPowerPort': 2,
-    'LaserPowerPort': 1,
-#    'LaserShutterPowerPort': 8,
-    'FilterWheelPowerPort': 6, # Need to add this to main_scheduler.py
-    'FilterWheelControlPowerPort': 4, # Need to add this to main_scheduler.py
-    'CloudSensorPowerPort': 5,
-    'NetworkSwitchPowerPort': 7,
-    'PCPowerPort': 8,
+    'AndorPowerPort': 2,
+    'SkyScannerPowerPort': 4,
+    'LaserPowerPort': 5,
+    'LaserShutterPowerPort': 8,
 
     # Laser shutter
     'vendorId': 0x0461,
@@ -72,16 +67,12 @@ skyscan_config = {
     'sun_location_zeni': 20,
     'moon_location_azi': 30,
     'moon_location_zeni': 30,
-    'azi_offset': 147.65,
-    'zeni_offset': 0.4,
+    'azi_offset': 19.31,
+    'zeni_offset': 0.45,
     'azi_world': 45,
     'zeni_world': 45,
     'number_of_steps': 50,
     'port_location': '/dev/ttyUSB0'
 }
 
-filterwheel_config = {
-    'port_location': '/dev/ttyUSB0',
-    'laser_position': 2,
-    'park_position': 0
-}
+
