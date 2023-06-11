@@ -1,3 +1,8 @@
+# Tested on
+Ubuntu 22.04
+
+Python 3.10.6
+
 # Initial setup for Odyssey
 
 Install Ubuntu 22.04 with erase disk and wipe out old operating system (Windows)
@@ -14,8 +19,6 @@ check status:
 
 If it is not running you might need to turn off Ubuntu's native RDP (which is less convenient than xrdp).
 Log out and test RDP
-
-`apt install libhidapi-hidraw0`
 
 ## Setup SSH
 
@@ -81,7 +84,7 @@ After successful installation of Andor SDK, `libandor.so` should appear in `/usr
 # Python
 `sudo apt-get update`
 
-`sudo apt-get install python3.6`
+Install Python 3.10.6
 
 `sudo apt-get install python3-pip`
 
@@ -90,6 +93,8 @@ Clone this repo into home dir `~/airglow/airglow-controller`
 `pip3 install -r requirements.txt`
 
 ## Cython for SDK
+
+`sudo apt-get install build-essential python3-dev`
 
 cd into `components/andor_wrapper/andorsdk_wrapper` and `python3 setup.py build_ext -i` to build the python module
 
