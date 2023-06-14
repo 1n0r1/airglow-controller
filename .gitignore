@@ -8,3 +8,4 @@ errorcodestable.cpython*
 __pycache__
 
 config.py
+*.swp
