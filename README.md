@@ -3,6 +3,8 @@ Ubuntu 22.04
 
 Python 3.10.6
 
+Make a file `config.py` following `config.py.example` to setup configuration for different sites.
+
 # Initial setup for Odyssey
 
 Install Ubuntu 22.04 with erase disk and wipe out old operating system (Windows)
