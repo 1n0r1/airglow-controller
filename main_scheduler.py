@@ -8,7 +8,7 @@ import pickle
 from time import sleep
 from datetime import datetime, timedelta
 import smtplib, ssl
-from config import config, skyscan_config
+from config import config, skyscan_config, filterwheel_config
 from schedule import observations
 
 import utilities.time_helper
@@ -17,7 +17,7 @@ from utilities.send_mail import SendMail
 
 from components.camera import getCamera
 from components.shutterhid import HIDLaserShutter
-from components.sky_scanner import SkyScanner
+from components.sky_scanner_keo import SkyScanner
 from components.skyalert import SkyAlert
 from components.powercontrol import PowerControl
 from components.filterwheel import FilterWheel
@@ -44,12 +44,8 @@ try:
     powerControl.turnOn(config['SkyScannerPowerPort'])
     powerControl.turnOn(config['LaserPowerPort'])
     
-    # Filter wheel sequence
-    powerControl.turnOff(config['FilterWheelControlPowerPort'])
-    sleep(5)
+    # Filter wheel power (was a sequence before to reboot the Pi, but took that out
     powerControl.turnOn(config['FilterWheelPowerPort'])
-    sleep(5)
-    powerControl.turnOn(config['FilterWheelControlPowerPort'])
 
     logging.info('Waiting until Housekeeping time: ' +
                 str(timeHelper.getHousekeeping()))

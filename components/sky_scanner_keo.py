@@ -70,25 +70,48 @@ class SkyScanner():
         print("Finished Moving")
 
     def set_pos_real(self, azi_world, zeni_world):
-        azi, zeni = self.convert_to_machine_steps(azi_world, zeni_world)
-        print("THIS is where I am moving", azi, zeni)
+    # JJM REWRITE
+#        azi, zeni = self.convert_to_machine_steps(azi_world, zeni_world)
+#        print("THIS is where I am moving", azi, zeni)
         logging.info("SkyScanner moving to azi: %.2f, and zeni: %2f" %(azi_world, zeni_world))
-        logging.info("SkyScanner moving to machine step azi: %.2f, and zeni: %2f" %(azi, zeni))
-        self.ser.write(('a=%d ' % azi).encode())
-        self.ser.write(('z=%d ' % zeni).encode())
-        self.ser.write(('GOSUB4 ').encode())
-        process_az = self.ser.readline().decode()
-        azi1, zeni1 = self.get_curr_coords()
-        while (azi != azi1 or zeni != zeni1):
-            print(azi, azi1, zeni, zeni1)
-            azi1, zeni1 = self.get_curr_coords()
-            sleep(2)
-            print("Waiting")
-            
-        azi1, zeni1 = self.get_curr_coords()
+#        logging.info("SkyScanner moving to machine step azi: %.2f, and zeni: %2f" %(azi, zeni))
+#        self.ser.write(('a=%d ' % azi).encode())
+#        self.ser.write(('z=%d ' % zeni).encode())
+#        self.ser.write(('GOSUB4 ').encode())
+        azi_ss = np.mod(azi_world+self.azi_offset,360.)
+        zeni_ss = zeni_world+self.zeni_offset
+        logging.info("SkyScanner moving to SS coords azi: %.2f and zeni: %.2f" %(azi_ss,zeni_ss))
+        self.ser.write("P(%.2f,%.2f)\r".encode() % (azi_ss, zeni_ss))
+
+        moving = True
+        SS_error = False
+        count = 0
+        while moving == True:
+            count = count+1
+            self.ser.write("S?\r".encode())
+            res = self.ser.readline().decode()
+#            print(res)
+            if (res == "!P:1\r") or (res == "1\r"):
+                moving = False
+            if count > 20:
+                moving = False
+                SS_error = True
+        
+        print("Finished Moving after %d reads" % count, SS_error)
+
         azi_curr, zeni_curr = self.get_world_coords()
+#        process_az = self.ser.readline().decode()
+#        azi1, zeni1 = self.get_curr_coords()
+#        while (azi != azi1 or zeni != zeni1):
+#            print(azi, azi1, zeni, zeni1)
+#            azi1, zeni1 = self.get_curr_coords()
+#            sleep(2)
+#            print("Waiting")
+#            
+#        azi1, zeni1 = self.get_curr_coords()
+#        azi_curr, zeni_curr = self.get_world_coords()
         logging.info("SkyScanner current location azi: %.2f, and zeni: %2f" %(azi_curr, zeni_curr))
-        logging.info("SkyScanner current machine step azi: %.2f, and zeni: %2f" %(azi1, zeni1))
+#        logging.info("SkyScanner current machine step azi: %.2f, and zeni: %2f" %(azi1, zeni1))
         print("Finished Moving")
 
 
@@ -144,9 +167,13 @@ class SkyScanner():
         return deg
 
     def get_world_coords(self):
-        azi, zeni = self.get_curr_coords()
-        world_az = self.convert_machine_step_to_degrees(azi) - self.azi_offset
-        world_zeni = -self.convert_machine_step_to_degrees(zeni) - self.zeni_offset + 180
+        # JJM REWRITE
+#        azi, zeni = self.get_curr_coords()
+#        world_az = self.convert_machine_step_to_degrees(azi) - self.azi_offset
+#        world_zeni = -self.convert_machine_step_to_degrees(zeni) - self.zeni_offset + 180
+        az_ss, zeni_ss = self.get_curr_coords()
+        world_az = np.mod(az_ss-self.azi_offset,360.0)
+        world_zeni = zeni_ss-self.zeni_offset
         return world_az, world_zeni
 
 
@@ -286,28 +313,58 @@ class SkyScanner():
     #     return az, ze
 
     def go_home(self):
+    # JJM REWRITE
         logging.info('Homing Skyscanner')
-        self.ser.write('GOSUB5 '.encode())
-        sleep(20)
-        print("Finished Moving")
+#        self.ser.write('GOSUB5 '.encode())
+#        sleep(20)
+        self.ser.write("H!\r".encode())
+        # Querry the state, it will return "1H:1" when it is done
+        moving = True
+        SS_error = False
+        count = 0
+        while moving == True:
+            count = count+1
+            self.ser.write("S?\r".encode())
+            res = self.ser.readline().decode()
+#            print(res)
+            if (res == "!H:1\r") or (res == "1\r"):
+                moving = False
+            if count > 40:
+                moving = False
+                SS_error = True
+        
+        print("Finished Moving after %d reads" % count, SS_error)
         logging.info('Homed Skyscanner')
         print("Finished Moving SkyScanner to Home Position")
 
     def get_curr_coords(self):
+    # JJM REWRITE
         '''Gets target position of SmartMotor'''
-        self.ser.write('RPA '.encode())
-        process_az = self.ser.readline().decode()
-        print(process_az)
-        split_by_command_numbers = process_az.split(' ')
-        split_by_hash = split_by_command_numbers[1].split('\r')
-        print(split_by_hash)
-        ze = int(split_by_hash[0])
-        az = int(split_by_hash[1])
+#        self.ser.write('RPA '.encode())
+#        process_az = self.ser.readline().decode()
+#        print(process_az)
+#        split_by_command_numbers = process_az.split(' ')
+#        split_by_hash = split_by_command_numbers[1].split('\r')
+#        print(split_by_hash)
+#        ze = int(split_by_hash[0])
+#        az = int(split_by_hash[1])
+        # Flush the serial line out
+        self.ser.write("P?\r".encode())
+        str = self.ser.readline().decode()
+#        print(str)
+        # Read the serial line
+        self.ser.write("P?\r".encode())
+        str = self.ser.readline().decode()
+#        print(str)
+        pos = str.split(',')
+        az=float(pos[0])
+        ze=float(pos[1])
+        # These are in SS coordinates
         return az, ze
 
     def _openSerial(self):
         '''opens serial port and sets handle'''
-        self.ser = serial.Serial(port='/dev/ttyUSB0', baudrate=9600,
+        self.ser = serial.Serial(port=self.port_location, baudrate=115200,
                                  parity=serial.PARITY_NONE, stopbits=serial.STOPBITS_ONE,
                                  bytesize=serial.EIGHTBITS, timeout=1)
 
