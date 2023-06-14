@@ -8,4 +8,7 @@ errorcodestable.cpython*
 __pycache__
 
 config.py
+schedule.py
 *.swp
+
+
