@@ -4,6 +4,7 @@ Ubuntu 22.04
 Python 3.10.6
 
 Make a file `config.py` following `config.py.example` to setup configuration for different sites.
+Make a file `schedule.py` following `schedule.py.example` to setup configuration for different sites.
 
 # Initial setup for Odyssey
 
