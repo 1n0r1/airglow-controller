@@ -113,8 +113,12 @@ Remember to set the udev rule for laser shutter (written above)
 
 `python3 connection_test.py` to test all the components
 
-# Set crontab
+## Set crontab
+`crontab -l`
 
+## Setup static USB port
+Should update for actual text direction. Meanwhile here is a picture.
+![image](https://github.com/1n0r1/airglow-controller/assets/80285371/4cf66383-d5b0-44f2-8db4-d39c832494c4)
 
 
 ## Gmail setup (optional)
