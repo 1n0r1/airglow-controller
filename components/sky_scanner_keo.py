@@ -184,9 +184,7 @@ class SkyScanner():
             if (curr_az == machine_sun_azi and machine_sun_zeni == curr_zen):
                 break
         curr_az, curr_zen = self.get_curr_coords()
-        print(
-            "\nFinished moving to the sun's location - azi coord: %s"  %curr_az  + " zeni coord: %s. \n Use the arrow keys to move the position of the Sky Scanner (azi is left/right. Zeni is up/down). \n Press s to save current offset coords to c
-onfig. \n Press q to exit out of jog." %curr_zen)
+        print("\nFinished moving to the sun's location - azi coord: %s"  %curr_az  + " zeni coord: %s. \n Use the arrow keys to move the position of the Sky Scanner (azi is left/right. Zeni is up/down). \n Press s to save current offset coords to config. \n Press q to exit out of jog." %curr_zen)
         
 
         def press(key):
@@ -212,8 +210,7 @@ onfig. \n Press q to exit out of jog." %curr_zen)
                             isTimeoutSucceeded = False
                             print("Jogged to %f degrees azi" %self.convert_machine_step_to_degrees(curr_az1))
                             sun_azi_offset -= incrementMachineStepsAzi
-                            print("\ncurrent azi offset: %f" % sun_azi_offset +  "        previous Config Azi offset: %f" % self.azi_offset +  "\n current zeni offset: %f" % sun_zeni_offset + "        previous Config Zeni offset: %f"  %self.zeni_
-offset)
+                            print("\ncurrent azi offset: %f" % sun_azi_offset +  "        previous Config Azi offset: %f" % self.azi_offset +  "\n current zeni offset: %f" % sun_zeni_offset + "        previous Config Zeni offset: %f"  %self.zeni_offset)
 
                             break
                     if isTimeoutSucceeded:
@@ -231,8 +228,7 @@ offset)
                             isTimeoutSucceeded = False
                             print("Jogged to %f degrees azi" %self.convert_machine_step_to_degrees(curr_az1))
                             sun_azi_offset += incrementMachineStepsAzi
-                            print("\ncurrent azi offset: %f" % sun_azi_offset +  "        previous Config Azi offset: %f" % self.azi_offset +  "\ncurrent zeni offset: %f" % sun_zeni_offset + "        previous Config Zeni offset: %f"  %self.zeni_o
-ffset)
+                            print("\ncurrent azi offset: %f" % sun_azi_offset +  "        previous Config Azi offset: %f" % self.azi_offset +  "\ncurrent zeni offset: %f" % sun_zeni_offset + "        previous Config Zeni offset: %f"  %self.zeni_offset)
 
                             break
                     if isTimeoutSucceeded:
@@ -250,8 +246,7 @@ ffset)
                             isTimeoutSucceeded = False
                             print("Jogged to %f degrees zeni" %self.convert_machine_step_to_degrees(curr_zen1))
                             sun_zeni_offset -= incrementMachineStepsZeni
-                            print("\ncurrent azi offset: %f" % sun_azi_offset +  "        previous Config Azi offset: %f" % self.azi_offset +  "\n current zeni offset: %f" % sun_zeni_offset + "        previous Config Zeni offset: %f"  %self.zeni_
-offset)
+                            print("\ncurrent azi offset: %f" % sun_azi_offset +  "        previous Config Azi offset: %f" % self.azi_offset +  "\n current zeni offset: %f" % sun_zeni_offset + "        previous Config Zeni offset: %f"  %self.zeni_offset)
 
                             break
                     if isTimeoutSucceeded:
@@ -269,8 +264,7 @@ offset)
                             isTimeoutSucceeded = False
                             print("Jogged to %f degrees zeni" %self.convert_machine_step_to_degrees(curr_zen1))
                             sun_zeni_offset += incrementMachineStepsZeni
-                            print("\ncurrent azi offset: %f" % sun_azi_offset +  "        previous Config Azi offset: %f" % self.azi_offset +  "\n current zeni offset: %f" % sun_zeni_offset + "        previous Config Zeni offset: %f"  %self.zeni_
-offset)
+                            print("\ncurrent azi offset: %f" % sun_azi_offset +  "        previous Config Azi offset: %f" % self.azi_offset +  "\n current zeni offset: %f" % sun_zeni_offset + "        previous Config Zeni offset: %f"  %self.zeni_offset)
 
                             break
                     if isTimeoutSucceeded:
