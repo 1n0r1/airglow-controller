@@ -38,7 +38,7 @@ logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 #lasershutter.close_shutter()
 #sleep(5)
 
-fw = FilterWheel('/dev/ttyUSB0')
+fw = FilterWheel(ip_address='http://192.168.1.143:8080/')
 fw.home()
 fw.go(1)
 

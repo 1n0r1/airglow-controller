@@ -43,7 +43,7 @@ try:
     powerControl.turnOn(config['AndorPowerPort'])
     powerControl.turnOn(config['SkyScannerPowerPort'])
     powerControl.turnOn(config['LaserPowerPort'])
-    
+
     # Filter wheel power (was a sequence before to reboot the Pi, but took that out
     powerControl.turnOn(config['FilterWheelPowerPort'])
 
@@ -56,7 +56,7 @@ try:
     lasershutter = HIDLaserShutter(config['vendorId'], config['productId'])
     skyscanner = SkyScanner(skyscan_config['max_steps'], skyscan_config['azi_offset'], skyscan_config['zeni_offset'], skyscan_config['azi_world'], skyscan_config['zeni_world'], skyscan_config['number_of_steps'], skyscan_config['port_location'])
     camera = getCamera("Andor")
-    fw = FilterWheel(filterwheel_config['port_location'])
+    fw = FilterWheel(ip_address=filterwheel_config['ip_address'])
 
     # Signal to response to interupt/kill signal
     def signal_handler(sig, frame):
