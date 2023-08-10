@@ -139,7 +139,7 @@ try:
             logging.info('Taking sky exposure')
 
             if (observation['lastIntensity'] == 0 or observation['lastExpTime'] == 0):
-                observation['exposureTime'] = 300
+                observation['exposureTime'] = observation['defaultExposureTime']
             else:
                 observation['exposureTime'] = min(0.5*observation['lastExpTime']*(1 + observation['desiredIntensity']/observation['lastIntensity']),
                                                 config['maxExposureTime'])
