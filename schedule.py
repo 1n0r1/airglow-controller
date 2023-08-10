@@ -5,6 +5,7 @@ observations = [
         "laserShutter": False,
         "imageTag": "XR",
         "exposureTime": 300,
+        "defaultExposureTime": 120,
         "desiredIntensity": 9.0,
         "lastExpTime": 00.00,
         "lastIntensity": 0.0
@@ -17,6 +18,7 @@ observations = [
         "laserShutter": False,
         "imageTag": "XG",
         "exposureTime": 300,
+        "defaultExposureTime": 60,
         "desiredIntensity": 9.0,
         "lastExpTime": 00.00,
         "lastIntensity": 0.0
@@ -29,6 +31,7 @@ observations = [
         "laserShutter": False,
         "imageTag": "XR",
         "exposureTime": 300,
+        "defaultExposureTime": 120,
         "desiredIntensity": 9.0,
         "lastExpTime": 00.00,
         "lastIntensity": 0.0
@@ -40,6 +43,7 @@ observations = [
         "laserShutter": False,
         "imageTag": "XG",
         "exposureTime": 300,
+        "defaultExposureTime": 60,
         "desiredIntensity": 9.0,
         "lastExpTime": 00.00,
         "lastIntensity": 0.0
@@ -52,6 +56,7 @@ observations = [
         "laserShutter": False,
         "imageTag": "XR",
         "exposureTime": 300,
+        "defaultExposureTime": 120,
         "desiredIntensity": 9.0,
         "lastExpTime": 00.00,
         "lastIntensity": 0.0
@@ -63,6 +68,7 @@ observations = [
         "laserShutter": False,
         "imageTag": "XG",
         "exposureTime": 300,
+        "defaultExposureTime": 60,
         "desiredIntensity": 9.0,
         "lastExpTime": 00.00,
         "lastIntensity": 0.0
@@ -74,6 +80,7 @@ observations = [
         "laserShutter": False,
         "imageTag": "XR",
         "exposureTime": 300,
+        "defaultExposureTime": 120,
         "desiredIntensity": 9.0,
         "lastExpTime": 00.00,
         "lastIntensity": 0.0
@@ -85,6 +92,7 @@ observations = [
         "laserShutter": False,
         "imageTag": "XG",
         "exposureTime": 300,
+        "defaultExposureTime": 60,
         "desiredIntensity": 9.0,
         "lastExpTime": 00.00,
         "lastIntensity": 0.0
@@ -97,6 +105,7 @@ observations = [
         "laserShutter": False,
         "imageTag": "XR",
         "exposureTime": 300,
+        "defaultExposureTime": 120,
         "desiredIntensity": 9.0,
         "lastExpTime": 00.00,
         "lastIntensity": 0.0
@@ -108,6 +117,7 @@ observations = [
         "laserShutter": False,
         "imageTag": "XG",
         "exposureTime": 300,
+        "defaultExposureTime": 60,
         "desiredIntensity": 9.0,
         "lastExpTime": 00.00,
         "lastIntensity": 0.0
