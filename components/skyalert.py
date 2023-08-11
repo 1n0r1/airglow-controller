@@ -19,14 +19,14 @@ class SkyAlert():
     def getList(self):
         arr = []
 
-        count = 5
+        count = 2
         while count != 0:
             try:
                 arr = requests.get(url=self.address, timeout=10).text.split()
                 count = 0
             except:
                 count = count - 1
-                sleep(5)
+                sleep(1)
         if len(arr) == 0:
             arr = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
             logging.error('Cannot communicate with SkyAlert')
