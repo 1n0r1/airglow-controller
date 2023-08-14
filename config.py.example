@@ -29,6 +29,7 @@ config = {
     'vbin': 2,
 
     'skyAlertAddress': 'http://192.168.1.126:81',
+    'skyAlertMAC': '2c:f7:f1:b8:10:73',
     'powerSwitchAddress': '192.168.1.100',
     'powerSwitchUser': 'admin',
     'powerSwitchPassword': 'ionosphere',

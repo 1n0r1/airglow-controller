@@ -14,6 +14,7 @@ from schedule import observations
 import utilities.time_helper
 from utilities.image_taker import Image_Helper
 from utilities.send_mail import SendMail
+from utilities.get_IP import get_IP_from_MAC
 
 from components.camera import getCamera
 from components.shutterhid import HIDLaserShutter
@@ -46,6 +47,18 @@ try:
 
     # Filter wheel power (was a sequence before to reboot the Pi, but took that out
     powerControl.turnOn(config['FilterWheelPowerPort'])
+
+    # Cycle the Cloud sensor power
+    powerControl.turnOff(config['CloudSensorPowerPort'])
+    sleep(5)
+    powerControl.turnOn(config['CloudSensorPowerPort'])
+    sleep(20)
+    SkyAlert_IP = get_IP_from_MAC(config['skyAlertMAC'])
+    if SkyAlert_IP is not None:
+        config['skyAlertAddress'] = 'http://' + SkyAlert_IP + ':81'
+        logging.info('Found SkyAlert at %s' % SkyAlert_IP)
+    else:
+        logging.info('Could not find SkyAlert after power cycle')
 
     logging.info('Waiting until Housekeeping time: ' +
                 str(timeHelper.getHousekeeping()))
