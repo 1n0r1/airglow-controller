@@ -52,13 +52,35 @@ try:
     powerControl.turnOff(config['CloudSensorPowerPort'])
     sleep(5)
     powerControl.turnOn(config['CloudSensorPowerPort'])
-    sleep(20)
+    sleep(45)
     SkyAlert_IP = get_IP_from_MAC(config['skyAlertMAC'])
     if SkyAlert_IP is not None:
         config['skyAlertAddress'] = 'http://' + SkyAlert_IP + ':81'
         logging.info('Found SkyAlert at %s' % SkyAlert_IP)
     else:
         logging.info('Could not find SkyAlert after power cycle')
+
+    # Make sure we can find the filterwheel
+    filterwheel_serial = False
+    filterwheel_IP = get_IP_from_MAC(filterwheel_config['MAC_address'])
+    if filterwheel_IP is not None:
+        filterwheel_config['ip_address'] = 'http://' + filterwheel_IP + ':8080/'
+        filterwheel_serial = False
+        logging.info('Found FilterWheel at %s' % filterwheel_IP)
+    else:
+        logging.info('Could not find the IP address for the filterwheel. Rebooting.')
+        powerControl.turnOff(config['FilterWheelControlPowerPort'])
+        sleep(5)
+        powerControl.turnOn(config['FilterWheelControlPowerPort'])
+        sleep(45)
+        filterwheel_IP = get_IP_from_MAC(filterwheel_config['MAC_address'])
+        if filterwheel_IP is not None:
+            filterwheel_config['ip_address'] = 'http://' + filterwheel_IP + ':8080'
+            filterwheel_serial = False
+            logging.info('Found FilterWheel at %s' % filterwheel_IP)
+        else:
+            logging.info('Still cannot find IP address fo the filterwheel. Reverting to serial com.')
+            filterwheel_serial = True
 
     logging.info('Waiting until Housekeeping time: ' +
                 str(timeHelper.getHousekeeping()))
@@ -69,7 +91,14 @@ try:
     lasershutter = HIDLaserShutter(config['vendorId'], config['productId'])
     skyscanner = SkyScanner(skyscan_config['max_steps'], skyscan_config['azi_offset'], skyscan_config['zeni_offset'], skyscan_config['azi_world'], skyscan_config['zeni_world'], skyscan_config['number_of_steps'], skyscan_config['port_location'])
     camera = getCamera("Andor")
-    fw = FilterWheel(ip_address=filterwheel_config['ip_address'])
+    if filterwheel_serial:
+        # Use the serial port
+        logging.info('Opening Filterwheel serial port')
+        fw = FilterWheel(port=filterwheel_config['port_location'])
+    else:
+        # Use the network (this is preferred!)
+        logging.info('Opening Filterwheel network')
+        fw = FilterWheel(ip_address=filterwheel_config['ip_address'])
 
     # Signal to response to interupt/kill signal
     def signal_handler(sig, frame):
@@ -77,6 +106,11 @@ try:
         fw.go(filterwheel_config['park_position'])
         camera.turnOffCooler()
         camera.shutDown()
+        powerControl = PowerControl(config['powerSwitchAddress'], config['powerSwitchUser'], config['powerSwitchPassword'])
+        powerControl.turnOff(config['AndorPowerPort'])
+        powerControl.turnOff(config['SkyScannerPowerPort'])
+        powerControl.turnOff(config['LaserPowerPort'])
+        powerControl.turnOff(config['FilterWheelPowerPort'])
         logging.info('Exiting')
         sys.exit(0)
     signal.signal(signal.SIGINT, signal_handler)
@@ -210,6 +244,13 @@ try:
 
 except Exception as e:
     logging.error(e)
+
+    logging.error('Turning off components')
+    powerControl = PowerControl(config['powerSwitchAddress'], config['powerSwitchUser'], config['powerSwitchPassword'])
+    powerControl.turnOff(config['AndorPowerPort'])
+    powerControl.turnOff(config['SkyScannerPowerPort'])
+    powerControl.turnOff(config['LaserPowerPort'])
+    powerControl.turnOff(config['FilterWheelPowerPort'])
 
     sm = SendMail(config['email'], config['pickleCred'], config['gmailCred'], config['site'])
     
