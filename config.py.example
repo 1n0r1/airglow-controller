@@ -83,6 +83,8 @@ skyscan_config = {
 
 filterwheel_config = {
     'port_location': '/dev/ttyUSB0',
+    'ip_address': 'http://192.168.1.192:8080/',
+    'MAC_address': 'e4:5f:01:db:b9:c4',
     'laser_position': 2,
     'park_position': 0
 }
