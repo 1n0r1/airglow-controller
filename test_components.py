@@ -81,7 +81,8 @@ if 'LaserShutter' in what_to_test:
 if 'FilterWheel' in what_to_test:
     powerControl.turnOn(config['FilterWheelPowerPort'])
     logging.info('Initializing FilterWheel')
-    fw = FilterWheel(filterwheel_config['port_location'])
+    fw = FilterWheel(ip_address=filterwheel_config['ip_address'])
+##    fw = FilterWheel(filterwheel_config['port_location'])
     logging.info('Homing Filterwheel')
     fw.home()
     logging.info('Going to positiion 4')
@@ -117,7 +118,8 @@ if 'Sequence' in what_to_test:
     powerControl.turnOn(config['SkyScannerPowerPort'])
     powerControl.turnOn(config['FilterWheelPowerPort'])
 
-    fw = FilterWheel(filterwheel_config['port_location'])
+    fw = FilterWheel(ip_address=filterwheel_config['ip_address'])
+#    fw = FilterWheel(filterwheel_config['port_location'])
     skyscanner = SkyScanner(skyscan_config['max_steps'], skyscan_config['azi_offset'], skyscan_config['zeni_offset'], skyscan_config['azi_world'], skyscan_config['zeni_world'], skyscan_config['number_of_steps'], skyscan_config['port_location'])
 
     logging.info('Sending SkyScanner home')
