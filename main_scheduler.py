@@ -72,15 +72,27 @@ try:
         powerControl.turnOff(config['FilterWheelControlPowerPort'])
         sleep(5)
         powerControl.turnOn(config['FilterWheelControlPowerPort'])
-        sleep(45)
+        sleep(60)
         filterwheel_IP = get_IP_from_MAC(filterwheel_config['MAC_address'])
         if filterwheel_IP is not None:
             filterwheel_config['ip_address'] = 'http://' + filterwheel_IP + ':8080'
             filterwheel_serial = False
             logging.info('Found FilterWheel at %s' % filterwheel_IP)
         else:
-            logging.info('Still cannot find IP address fo the filterwheel. Reverting to serial com.')
-            filterwheel_serial = True
+            logging.info('Still cannot find IP address fo the filterwheel. Waiting...')
+            wait_count = 0
+            found = False
+            while wait_count < 5 and found == False:
+                wait_count = wait_count+1
+                sleep(15)
+                filterwheel_IP = get_IP_from_MAC(filterwheel_config['MAC_address'])
+                if filterwheel_IP is not None:
+                    filterwheel_config['ip_address'] = 'http://' + filterwheel_IP + ':8080'
+                    filterwheel_serial = False
+                    found = True
+                    logging.info('Found Filterwheel at %s' % filterwheel_IP)
+                else:
+                    filterwheel_serial = True
 
     logging.info('Waiting until Housekeeping time: ' +
                 str(timeHelper.getHousekeeping()))
